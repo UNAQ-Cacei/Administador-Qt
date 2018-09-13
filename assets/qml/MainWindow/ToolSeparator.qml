@@ -23,56 +23,34 @@
 
 import QtQuick 2.0
 import QtQuick.Layouts 1.0
-import QtQuick.Controls 1.0
 
-ToolBar {
-    id: toolbar
-
-    anchors {
-        left: parent.left
-        right: parent.right
-    }
-
+Item {
+    width: 8
+    Layout.margins: 6
+    Layout.fillHeight: true
+    
     RowLayout {
+        spacing: 0
         anchors.fill: parent
-        anchors.verticalCenter: parent.verticalCenter
-        spacing: app.spacing / 2
-
-        ToolButton {
-            iconSource: "qrc:/iconos/abrir.svg"
+        
+        Item {
+            Layout.fillWidth: true
         }
-
-        ToolButton {
-            iconSource: "qrc:/iconos/nuevo-db.svg"
+        
+        Rectangle {
+            width: 1
+            color: "#22000000"
+            Layout.fillHeight: true
         }
-
-        ToolButton {
-            iconSource: "qrc:/iconos/excel.svg"
+        
+        Rectangle {
+            width: 1
+            color: "#33ffffff"
+            Layout.fillHeight: true
         }
-
-        ToolSeparator {}
-
-        ToolButton {
-            iconSource: "qrc:/iconos/registrar-profesor.svg"
-        }
-
-        ToolButton {
-            iconSource: "qrc:/iconos/editar-informacion.svg"
-        }
-
-        ToolButton {
-            iconSource: "qrc:/iconos/buscar.svg"
-        }
-
-        ToolSeparator {}
-
-        ToolButton {
-            iconSource: "qrc:/iconos/info.svg"
-        }
-
+        
         Item {
             Layout.fillWidth: true
         }
     }
 }
-

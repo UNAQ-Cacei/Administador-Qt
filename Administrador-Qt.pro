@@ -97,11 +97,12 @@ RESOURCES += \
     assets/imagenes/imagenes.qrc \
     assets/iconos/iconos.qrc
 
-DISTFILES += \
+OTHER_FILES += \
     assets/qml/Dialogos/AcercaDe.qml \
     assets/qml/MainWindow/Toolbar.qml \
     assets/qml/main.qml \
     assets/qml/MainWindow/MainWindow.qml \
-    assets/qml/MainWindow/Menubar.qml
+    assets/qml/MainWindow/Menubar.qml \ 
+    assets/qml/MainWindow/ToolSeparator.qml
 
 
