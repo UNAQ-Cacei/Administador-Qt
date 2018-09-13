@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/qml">
+        <file>main.qml</file>
+        <file>Dialogos/AcercaDe.qml</file>
+        <file>MainWindow/Toolbar.qml</file>
+        <file>MainWindow/MainWindow.qml</file>
+        <file>MainWindow/Menubar.qml</file>
+    </qresource>
+</RCC>

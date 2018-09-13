@@ -1,0 +1,36 @@
+<RCC>
+    <qresource prefix="/iconos">
+        <file>abrir.svg</file>
+        <file>actualizar.svg</file>
+        <file>auto.svg</file>
+        <file>ayuda.svg</file>
+        <file>buscar.svg</file>
+        <file>cancelar.svg</file>
+        <file>cerrar.svg</file>
+        <file>config.svg</file>
+        <file>db.svg</file>
+        <file>editar-informacion.svg</file>
+        <file>editar.svg</file>
+        <file>error.svg</file>
+        <file>excel.svg</file>
+        <file>formato.svg</file>
+        <file>guardar-como.svg</file>
+        <file>guardar.svg</file>
+        <file>imprimir.svg</file>
+        <file>info.svg</file>
+        <file>liga.svg</file>
+        <file>limpiar.svg</file>
+        <file>notas.svg</file>
+        <file>ok.svg</file>
+        <file>pdf.svg</file>
+        <file>preview_large.svg</file>
+        <file>provedor.svg</file>
+        <file>base.svg</file>
+        <file>redo.svg</file>
+        <file>reporte.svg</file>
+        <file>salir.svg</file>
+        <file>undo.svg</file>
+        <file>nuevo-db.svg</file>
+        <file>registrar-profesor.svg</file>
+    </qresource>
+</RCC>
