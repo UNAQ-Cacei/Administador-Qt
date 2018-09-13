@@ -1,9 +1,9 @@
 [Desktop Entry]
 Name=Administador CACEI
 Comment=Software de administración de la base de datos CACEI
-Exec=administador-cacei
+Exec=administrador-cacei
 Terminal=false
 Type=Application
 StartupNotify=true
 Categories=Education;Database;Utility;
-Icon=administador-cacei
+Icon=administrador-cacei
