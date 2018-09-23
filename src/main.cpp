@@ -24,8 +24,10 @@
 #include <QtQml>
 #include <QQmlEngine>
 #include <QApplication>
+#include <QStyleFactory>
 
 #include "AppInfo.h"
+#include "AdministradorDb.h"
 
 int main(int argc, char** argv) {
     // Definir nombre, versión y desarollador de la aplicación
@@ -36,14 +38,17 @@ int main(int argc, char** argv) {
 
     // Crear aplicacion
     QApplication app(argc, argv);
+    app.setStyle(QStyleFactory::create("fusion"));
 
     // Init. modulos C++/QML
+    AdministradorDb* dbAdmin = AdministradorDb::instancia();
 
     // Inicializar interfáz gráfica
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty("AppName", app.applicationName());
     engine.rootContext()->setContextProperty("AppCompany", app.organizationName());
     engine.rootContext()->setContextProperty("AppVersion", app.applicationVersion());
+    engine.rootContext()->setContextProperty("CAdministradorDb", dbAdmin);
     engine.load(QUrl(QStringLiteral("qrc:/qml/main.qml")));
 
     // Salir de la aplicaction si la interfáz QML tiene un error

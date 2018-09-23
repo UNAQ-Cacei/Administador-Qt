@@ -28,6 +28,10 @@ Para poder crear un instalador para Windows:
 8. Haga clic derecho en `setup.nsi` y seleccione "Compile with NSIS".
 9. Una vez que se haya generado el instalador, verifique que funcione adecuadamente.
 
+### Notas para Windows 10
+
+Si el administrador no puede abrir la base de datos, es necesario instalar el driver de bases de datos de Access de 32 bits desde: [https://www.microsoft.com/en-us/download/details.aspx?id=13255](https://www.microsoft.com/en-us/download/details.aspx?id=13255)
+
 ## Licencia
 
 Este proyecto se distribuye bajo la licencia de MIT. Para más información, favor de leer [este documento](LICENCIA.md).

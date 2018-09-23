@@ -22,6 +22,8 @@
  */
 
 import QtQuick 2.0
+
+import "Dialogos"
 import "MainWindow"
 
 Item {
@@ -33,12 +35,41 @@ Item {
     readonly property int spacing: 8
 
     //
-    // Cargar ventana principal en otro thread
+    // Ventana principal
     //
-    Loader {
-        asynchronous: true
-        sourceComponent: MainWindow {
-            Component.onCompleted: showNormal()
-        }
+    MainWindow {
+        Component.onCompleted: showNormal()
+
+        onAcercaDe: acercaDe.show()
+        onNuevoProfesor: nuevoProfesor.show()
+        onReportarError: {}
+        onGenerarReporteIndividual: buscarProfesor.show()
+        onModificarDatosExistentes: buscarProfesor.show()
+        onGenerarReporteDeArea: generarReporteDeArea.show()
+        onGenerarReporteGeneral: generarReporteGeneral.show()
+        onNuevaBaseDeDatos: CAdministradorDb.nuevaBaseDeDatos()
+        onCerrarBaseDeDatos: CAdministradorDb.cerrarBaseDeDatos()
+        onImportarBaseDeDatosExcel: CAdministradorDb.importarDbExcel()
+        onAbrirBaseDeDatosExistente: CAdministradorDb.abrirBaseDeDatos()
+        onEstadisticasBaseDeDatos: CAdministradorDb.mostrarEstadisticas()
     }
+
+    //
+    // Dialogo de buscar profesor, se usa en varias
+    // partes de la aplicacion
+    //
+    BuscarProfesor {
+        id: buscarProfesor
+        onProfesorSeleccionado: {}
+    }
+
+    //
+    // Otros dialogos de la aplicacion
+    //
+    AcercaDe {id: acercaDe }
+    NuevoProfesor {id: nuevoProfesor }
+    GenerarReporte {id: generarReporteGeneral }
+    GenerarReporteDeArea {id: generarReporteDeArea }
+    ModificarDatosExistentes {id: modificarDatosExistentes }
+    GenerarReporteIndividual {id: generarReporteIndividual }
 }

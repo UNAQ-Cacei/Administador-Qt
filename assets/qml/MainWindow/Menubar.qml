@@ -27,16 +27,32 @@ import QtQuick.Controls 1.0
 MenuBar {
     id: menu
 
+    signal salir()
+    signal acercaDe()
+    signal reportarError()
+    signal nuevoProfesor()
+    signal nuevaBaseDeDatos()
+    signal cerrarBaseDeDatos()
+    signal generarReporteDeArea()
+    signal generarReporteGeneral()
+    signal estadisticasBaseDeDatos()
+    signal generarReporteIndividual()
+    signal modificarDatosExistentes()
+    signal importarBaseDeDatosExcel()
+    signal abrirBaseDeDatosExistente()
+
     Menu {
         title: qsTr("Archivo")
 
         MenuItem {
+            onTriggered: nuevaBaseDeDatos()
             iconSource: "qrc:/iconos/nuevo-db.svg"
             text: qsTr("Nueva base de datos") + "..."
         }
 
         MenuItem {
             iconSource: "qrc:/iconos/excel.svg"
+            onTriggered: importarBaseDeDatosExcel()
             text: qsTr("Importar base de datos de Excel") + "..."
         }
 
@@ -44,24 +60,29 @@ MenuBar {
 
         MenuItem {
             iconSource: "qrc:/iconos/abrir.svg"
+            onTriggered: abrirBaseDeDatosExistente()
             text: qsTr("Abrir base de datos") + "..."
         }
 
         MenuItem {
             iconSource: "qrc:/iconos/info.svg"
+            enabled: CAdministradorDb.disponible
+            onTriggered: estadisticasBaseDeDatos()
             text: qsTr("Estadísticas de la base de datos") + "..."
         }
 
         MenuItem {
+            onTriggered: cerrarBaseDeDatos()
             text: qsTr("Cerrar base de datos")
             iconSource: "qrc:/iconos/cerrar.svg"
+            enabled: CAdministradorDb.disponible
         }
 
         MenuSeparator{}
 
         MenuItem {
             text: qsTr("Salir")
-            onTriggered: window.close()
+            onTriggered: salir()
             iconSource: "qrc:/iconos/salir.svg"
         }
     }
@@ -70,7 +91,9 @@ MenuBar {
         title: qsTr("Reportes")
 
         MenuItem {
+            enabled: CAdministradorDb.disponible
             iconSource: "qrc:/iconos/reporte.svg"
+            onTriggered: generarReporteIndividual()
             text: qsTr("Generar reporte individual")
         }
 
@@ -78,11 +101,15 @@ MenuBar {
 
         MenuItem {
             iconSource: "qrc:/iconos/auto.svg"
+            onTriggered: generarReporteDeArea()
+            enabled: CAdministradorDb.disponible
             text: qsTr("Generar reporte de academia/área") + "..."
         }
 
         MenuItem {
             iconSource: "qrc:/iconos/auto.svg"
+            onTriggered: generarReporteGeneral()
+            enabled: CAdministradorDb.disponible
             text: qsTr("Generar reporte de todos los profesores")
         }
     }
@@ -91,20 +118,17 @@ MenuBar {
         title: qsTr("Profesores")
 
         MenuItem {
+            onTriggered: nuevoProfesor()
+            enabled: CAdministradorDb.disponible
             iconSource: "qrc:/iconos/registrar-profesor.svg"
             text: qsTr("Registrar nuevo profesor(a)") + "..."
         }
 
         MenuItem {
+            enabled: CAdministradorDb.disponible
+            onTriggered: modificarDatosExistentes()
             iconSource: "qrc:/iconos/editar-informacion.svg"
-            text: qsTr("Modificar datos existentes") + "..."
-        }
-
-        MenuSeparator {}
-
-        MenuItem {
-            iconSource: "qrc:/iconos/buscar.svg"
-            text: qsTr("Buscar profesor(a)") + "..."
+            text: qsTr("Ver/Modificar datos existentes") + "..."
         }
     }
 
@@ -112,6 +136,7 @@ MenuBar {
         title: qsTr("Ayuda")
 
         MenuItem {
+            onTriggered: acercaDe()
             text: qsTr("Acerca de") + "..."
             iconSource: "qrc:/iconos/info.svg"
         }
@@ -124,6 +149,7 @@ MenuBar {
         MenuSeparator {}
 
         MenuItem {
+            onTriggered: reportarError()
             text: qsTr("Reportar error")
             iconSource: "qrc:/iconos/error.svg"
         }

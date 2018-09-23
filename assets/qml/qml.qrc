@@ -6,5 +6,11 @@
         <file>MainWindow/MainWindow.qml</file>
         <file>MainWindow/Menubar.qml</file>
         <file>MainWindow/ToolSeparator.qml</file>
+        <file>Dialogos/BuscarProfesor.qml</file>
+        <file>Dialogos/GenerarReporte.qml</file>
+        <file>Dialogos/GenerarReporteDeArea.qml</file>
+        <file>Dialogos/GenerarReporteIndividual.qml</file>
+        <file>Dialogos/ModificarDatosExistentes.qml</file>
+        <file>Dialogos/NuevoProfesor.qml</file>
     </qresource>
 </RCC>

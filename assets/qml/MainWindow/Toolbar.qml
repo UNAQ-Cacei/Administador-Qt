@@ -28,6 +28,13 @@ import QtQuick.Controls 1.0
 ToolBar {
     id: toolbar
 
+    signal nuevoProfesor()
+    signal nuevaBaseDeDatos()
+    signal estadisticasBaseDeDatos()
+    signal modificarDatosExistentes()
+    signal importarBaseDeDatosExcel()
+    signal abrirBaseDeDatosExistente()
+
     anchors {
         left: parent.left
         right: parent.right
@@ -35,39 +42,45 @@ ToolBar {
 
     RowLayout {
         anchors.fill: parent
-        anchors.verticalCenter: parent.verticalCenter
         spacing: app.spacing / 2
+        anchors.verticalCenter: parent.verticalCenter
 
         ToolButton {
-            iconSource: "qrc:/iconos/abrir.svg"
-        }
-
-        ToolButton {
+            onClicked: toolbar.nuevaBaseDeDatos()
             iconSource: "qrc:/iconos/nuevo-db.svg"
         }
 
         ToolButton {
+            iconSource: "qrc:/iconos/abrir.svg"
+            onClicked: toolbar.abrirBaseDeDatosExistente()
+        }
+
+        ToolButton {
             iconSource: "qrc:/iconos/excel.svg"
+            onClicked: toolbar.importarBaseDeDatosExcel()
         }
 
         ToolSeparator {}
 
         ToolButton {
+            id: button
+            onClicked: toolbar.nuevoProfesor()
+            enabled: CAdministradorDb.disponible
             iconSource: "qrc:/iconos/registrar-profesor.svg"
         }
 
         ToolButton {
+            enabled: CAdministradorDb.disponible
+            onClicked: toolbar.modificarDatosExistentes()
             iconSource: "qrc:/iconos/editar-informacion.svg"
-        }
-
-        ToolButton {
-            iconSource: "qrc:/iconos/buscar.svg"
         }
 
         ToolSeparator {}
 
         ToolButton {
             iconSource: "qrc:/iconos/info.svg"
+            enabled: CAdministradorDb.disponible
+            onClicked: toolbar.estadisticasBaseDeDatos()
         }
 
         Item {

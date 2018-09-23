@@ -22,35 +22,9 @@
  */
 
 import QtQuick 2.0
-import QtQuick.Layouts 1.0
+import QtQuick.Window 2.0
+import QtQuick.Controls 1.0
 
-Item {
-    width: 8 - 2 * app.spacing
-    Layout.margins: 6
-    Layout.fillHeight: true
-    
-    RowLayout {
-        spacing: 0
-        anchors.fill: parent
-        
-        Item {
-            Layout.fillWidth: true
-        }
-        
-        Rectangle {
-            width: 1
-            color: "#22000000"
-            Layout.fillHeight: true
-        }
-        
-        Rectangle {
-            width: 1
-            color: "#33ffffff"
-            Layout.fillHeight: true
-        }
-        
-        Item {
-            Layout.fillWidth: true
-        }
-    }
+Window {
+    id: window
 }

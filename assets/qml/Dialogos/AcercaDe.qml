@@ -22,8 +22,89 @@
  */
 
 import QtQuick 2.0
+import QtQuick.Window 2.0
+import QtQuick.Layouts 1.0
 import QtQuick.Controls 1.0
 
-Item {
+Window {
+    id: window
+    title: qsTr("Acerca de %1").arg(AppName)
 
+    //
+    // Opciones de ventana
+    //
+    flags: Qt.Dialog |
+           Qt.WindowTitleHint |
+           Qt.WindowSystemMenuHint |
+           Qt.WindowCloseButtonHint |
+           Qt.WindowStaysOnTopHint
+
+    //
+    // Definir tamaño fijo de ventana
+    //
+    maximumWidth: minimumWidth
+    maximumHeight: minimumHeight
+    minimumWidth: layout.implicitWidth + 5 * app.spacing
+    minimumHeight: layout.implicitHeight + 5 * app.spacing
+
+    //
+    // Elementos de UI
+    //
+    ColumnLayout {
+        id: layout
+        spacing: app.spacing
+        anchors.centerIn: parent
+
+        Image {
+            source: "qrc:/imagenes/unaq.png"
+            Layout.alignment: Qt.AlignHCenter
+        }
+
+        Item {
+            height: app.spacing
+        }
+
+        Label {
+            text: AppName
+            font.bold: true
+            font.pixelSize: 18
+            Layout.alignment: Qt.AlignHCenter
+            horizontalAlignment: Label.AlignHCenter
+        }
+
+        Label {
+            font.pixelSize: 16
+            Layout.alignment: Qt.AlignHCenter
+            horizontalAlignment: Label.AlignHCenter
+            text: qsTr("Versión %1").arg(AppVersion)
+        }
+
+        Item {
+            height: app.spacing
+        }
+
+        Label {
+            opacity: 0.8
+            Layout.alignment: Qt.AlignHCenter
+            verticalAlignment: Label.AlignHCenter
+            text: qsTr("Desarrollado por Arath Burgos y Alex Spataru")
+        }
+
+        Label {
+            opacity: 0.6
+            Layout.alignment: Qt.AlignHCenter
+            verticalAlignment: Label.AlignHCenter
+            text: qsTr("Distribuido bajo la licencia MIT")
+        }
+
+        Item {
+            height: app.spacing
+        }
+
+        Button {
+            text: qsTr("Cerrar")
+            onClicked: window.close()
+            Layout.alignment: Qt.AlignRight
+        }
+    }
 }

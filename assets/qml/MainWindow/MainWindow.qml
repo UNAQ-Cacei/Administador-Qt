@@ -40,7 +40,23 @@ ApplicationWindow {
     //
     // Definir titulo de la ventana
     //
-    title: qsTr("%1 - Versión %2").arg(AppName).arg(AppVersion)
+    title: CAdministradorDb.disponible ? qsTr("%1 - %2").arg(CAdministradorDb.ubicacionBaseDeDatos).arg(AppName) : AppName
+
+    //
+    // Definir señales
+    //
+    signal acercaDe()
+    signal reportarError()
+    signal nuevoProfesor()
+    signal nuevaBaseDeDatos()
+    signal cerrarBaseDeDatos()
+    signal generarReporteDeArea()
+    signal generarReporteGeneral()
+    signal estadisticasBaseDeDatos()
+    signal generarReporteIndividual()
+    signal modificarDatosExistentes()
+    signal importarBaseDeDatosExcel()
+    signal abrirBaseDeDatosExistente()
 
     //
     // Guardar posición y tamaño de la ventana automáticamente
@@ -56,12 +72,30 @@ ApplicationWindow {
     // Definir barra de menu de la ventana
     //
     menuBar: Menubar {
+        onSalir: window.close()
+        onAcercaDe: window.acercaDe()
+        onNuevoProfesor: window.nuevoProfesor()
+        onNuevaBaseDeDatos: window.nuevaBaseDeDatos()
+        onCerrarBaseDeDatos: window.cerrarBaseDeDatos()
+        onGenerarReporteDeArea: window.generarReporteDeArea()
+        onGenerarReporteGeneral: window.generarReporteGeneral()
+        onImportarBaseDeDatosExcel: window.importarBaseDeDatosExcel()
+        onAbrirBaseDeDatosExistente: window.abrirBaseDeDatosExistente()
+        onGenerarReporteIndividual: window.generarReporteIndividual()
+        onModificarDatosExistentes: window.modificarDatosExistentes()
+        onEstadisticasBaseDeDatos: window.estadisticasBaseDeDatos()
     }
 
     //
     // Definir barra de herramientas
     //
     toolBar: Toolbar {
+        onNuevoProfesor: window.nuevoProfesor()
+        onNuevaBaseDeDatos: window.nuevaBaseDeDatos()
+        onEstadisticasBaseDeDatos: window.estadisticasBaseDeDatos()
+        onImportarBaseDeDatosExcel: window.importarBaseDeDatosExcel()
+        onModificarDatosExistentes: window.modificarDatosExistentes()
+        onAbrirBaseDeDatosExistente: window.abrirBaseDeDatosExistente()
     }
 
     //
@@ -130,16 +164,18 @@ ApplicationWindow {
             Layout.preferredHeight: app.spacing
         }
 
-        //
+        //s
         // Botones
         //
         Button {
             Layout.preferredWidth: 260
             Layout.alignment: Qt.AlignHCenter
             iconSource: "qrc:/iconos/abrir.svg"
+            onClicked: abrirBaseDeDatosExistente()
             text: qsTr("Abrir Base de Datos Existente")
         } Button {
             Layout.preferredWidth: 260
+            onClicked: nuevaBaseDeDatos()
             Layout.alignment: Qt.AlignHCenter
             iconSource: "qrc:/iconos/nuevo-db.svg"
             text: qsTr("Crear Base de Datos Vacía")
@@ -147,6 +183,7 @@ ApplicationWindow {
             Layout.preferredWidth: 260
             Layout.alignment: Qt.AlignHCenter
             iconSource: "qrc:/iconos/excel.svg"
+            onClicked: importarBaseDeDatosExcel()
             text: qsTr("Importar Base de Datos de Excel")
         }
 

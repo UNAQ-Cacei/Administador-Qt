@@ -20,3 +20,47 @@
  * CONTRATO, AGRAVIO O CUALQUIER OTRO MOTIVO, DERIVADAS DE, FUERA DE O EN
  * CONEXIÓN CON EL SOFTWARE O SU USO U OTRO TIPO DE ACCIONES EN EL SOFTWARE.
  */
+
+#ifndef ADMIN_DB_H
+#define ADMIN_DB_H
+
+#include <QtSql>
+#include <QObject>
+
+class AdministradorDb : public QObject {
+    Q_OBJECT
+    Q_PROPERTY (bool disponible
+                READ disponible
+                NOTIFY baseDeDatosCambiada)
+    Q_PROPERTY (QString ubicacionBaseDeDatos
+                READ ubicacionBaseDeDatos
+                NOTIFY baseDeDatosCambiada)
+
+signals:
+    void baseDeDatosCambiada();
+
+public:
+    ~AdministradorDb();
+
+    bool disponible();
+    QSqlDatabase* baseDeDatos();
+    QString ubicacionBaseDeDatos() const;
+
+    static AdministradorDb* instancia();
+
+public slots:
+    void nuevaBaseDeDatos();
+    void abrirBaseDeDatos();
+    void cerrarBaseDeDatos();
+    void importarDbExcel();
+    void mostrarEstadisticas();
+
+private slots:
+    void configurarBaseDeDatos(const QString& ubicacion);
+
+private:
+    QString m_dbUbicacion;
+    QSqlDatabase m_database;
+};
+
+#endif

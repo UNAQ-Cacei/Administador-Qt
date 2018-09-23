@@ -43,6 +43,7 @@ CONFIG += qtc_runnable
 CONFIG += resources_big
 CONFIG += qtquickcompiler
 
+QT += sql
 QT += xml
 QT += svg
 QT += core
@@ -104,5 +105,13 @@ OTHER_FILES += \
     assets/qml/MainWindow/MainWindow.qml \
     assets/qml/MainWindow/Menubar.qml \ 
     assets/qml/MainWindow/ToolSeparator.qml
+
+DISTFILES += \
+    assets/qml/Dialogos/BuscarProfesor.qml \
+    assets/qml/Dialogos/GenerarReporte.qml \
+    assets/qml/Dialogos/GenerarReporteDeArea.qml \
+    assets/qml/Dialogos/GenerarReporteIndividual.qml \
+    assets/qml/Dialogos/ModificarDatosExistentes.qml \
+    assets/qml/Dialogos/NuevoProfesor.qml
 
 
