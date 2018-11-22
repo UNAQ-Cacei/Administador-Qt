@@ -32,7 +32,6 @@ ToolBar {
     signal nuevaBaseDeDatos()
     signal estadisticasBaseDeDatos()
     signal modificarDatosExistentes()
-    signal importarBaseDeDatosExcel()
     signal abrirBaseDeDatosExistente()
 
     anchors {
@@ -53,11 +52,6 @@ ToolBar {
         ToolButton {
             iconSource: "qrc:/iconos/abrir.svg"
             onClicked: toolbar.abrirBaseDeDatosExistente()
-        }
-
-        ToolButton {
-            iconSource: "qrc:/iconos/excel.svg"
-            onClicked: toolbar.importarBaseDeDatosExcel()
         }
 
         ToolSeparator {}

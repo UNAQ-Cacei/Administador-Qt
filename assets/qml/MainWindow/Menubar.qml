@@ -38,7 +38,6 @@ MenuBar {
     signal estadisticasBaseDeDatos()
     signal generarReporteIndividual()
     signal modificarDatosExistentes()
-    signal importarBaseDeDatosExcel()
     signal abrirBaseDeDatosExistente()
 
     Menu {
@@ -49,14 +48,6 @@ MenuBar {
             iconSource: "qrc:/iconos/nuevo-db.svg"
             text: qsTr("Nueva base de datos") + "..."
         }
-
-        MenuItem {
-            iconSource: "qrc:/iconos/excel.svg"
-            onTriggered: importarBaseDeDatosExcel()
-            text: qsTr("Importar base de datos de Excel") + "..."
-        }
-
-        MenuSeparator{}
 
         MenuItem {
             iconSource: "qrc:/iconos/abrir.svg"

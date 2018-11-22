@@ -124,14 +124,6 @@ Window {
                         qsTr("Posgrado")
                     ]
                 }
-
-                CheckBox {
-                    text: qsTr("Limitar por tipo")
-                }
-
-                ComboBox {
-                    Layout.fillWidth: true
-                }
             }
         }
 

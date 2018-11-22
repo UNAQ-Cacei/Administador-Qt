@@ -55,7 +55,6 @@ ApplicationWindow {
     signal estadisticasBaseDeDatos()
     signal generarReporteIndividual()
     signal modificarDatosExistentes()
-    signal importarBaseDeDatosExcel()
     signal abrirBaseDeDatosExistente()
 
     //
@@ -79,7 +78,6 @@ ApplicationWindow {
         onCerrarBaseDeDatos: window.cerrarBaseDeDatos()
         onGenerarReporteDeArea: window.generarReporteDeArea()
         onGenerarReporteGeneral: window.generarReporteGeneral()
-        onImportarBaseDeDatosExcel: window.importarBaseDeDatosExcel()
         onAbrirBaseDeDatosExistente: window.abrirBaseDeDatosExistente()
         onGenerarReporteIndividual: window.generarReporteIndividual()
         onModificarDatosExistentes: window.modificarDatosExistentes()
@@ -93,7 +91,6 @@ ApplicationWindow {
         onNuevoProfesor: window.nuevoProfesor()
         onNuevaBaseDeDatos: window.nuevaBaseDeDatos()
         onEstadisticasBaseDeDatos: window.estadisticasBaseDeDatos()
-        onImportarBaseDeDatosExcel: window.importarBaseDeDatosExcel()
         onModificarDatosExistentes: window.modificarDatosExistentes()
         onAbrirBaseDeDatosExistente: window.abrirBaseDeDatosExistente()
     }
@@ -164,7 +161,7 @@ ApplicationWindow {
             Layout.preferredHeight: app.spacing
         }
 
-        //s
+        //
         // Botones
         //
         Button {
@@ -179,12 +176,6 @@ ApplicationWindow {
             Layout.alignment: Qt.AlignHCenter
             iconSource: "qrc:/iconos/nuevo-db.svg"
             text: qsTr("Crear Base de Datos Vacía")
-        } Button {
-            Layout.preferredWidth: 260
-            Layout.alignment: Qt.AlignHCenter
-            iconSource: "qrc:/iconos/excel.svg"
-            onClicked: importarBaseDeDatosExcel()
-            text: qsTr("Importar Base de Datos de Excel")
         }
 
         //

@@ -27,6 +27,8 @@
 #include <QtSql>
 #include <QObject>
 
+class Profesor;
+
 class AdministradorDb : public QObject {
     Q_OBJECT
     Q_PROPERTY (bool disponible
@@ -43,16 +45,18 @@ public:
     ~AdministradorDb();
 
     bool disponible();
-    QSqlDatabase* baseDeDatos();
+    QSqlDatabase &baseDeDatos();
     QString ubicacionBaseDeDatos() const;
 
     static AdministradorDb* instancia();
+
+    Profesor* registrarProfesor();
+    Profesor* obtenerProfesor(const int id);
 
 public slots:
     void nuevaBaseDeDatos();
     void abrirBaseDeDatos();
     void cerrarBaseDeDatos();
-    void importarDbExcel();
     void mostrarEstadisticas();
 
 private slots:
@@ -61,6 +65,7 @@ private slots:
 private:
     QString m_dbUbicacion;
     QSqlDatabase m_database;
+    QList<Profesor*> m_profesores;
 };
 
 #endif

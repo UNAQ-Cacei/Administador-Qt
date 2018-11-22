@@ -49,7 +49,6 @@ Item {
         onGenerarReporteGeneral: generarReporteGeneral.show()
         onNuevaBaseDeDatos: CAdministradorDb.nuevaBaseDeDatos()
         onCerrarBaseDeDatos: CAdministradorDb.cerrarBaseDeDatos()
-        onImportarBaseDeDatosExcel: CAdministradorDb.importarDbExcel()
         onAbrirBaseDeDatosExistente: CAdministradorDb.abrirBaseDeDatos()
         onEstadisticasBaseDeDatos: CAdministradorDb.mostrarEstadisticas()
     }

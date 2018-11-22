@@ -22,6 +22,7 @@
  */
 
 #include "AdministradorDb.h"
+#include "Profesor.h"
 
 #include <QDir>
 #include <QFileDialog>
@@ -54,6 +55,28 @@ AdministradorDb* AdministradorDb::instancia() {
 }
 
 /**
+ * Regresa el objeto que permite modificar/leer los datos del
+ * profesor con la @a id especificada (si existe)
+ */
+Profesor* AdministradorDb::obtenerProfesor(const int id) {
+    Q_ASSERT(id >= 0);
+    Q_ASSERT(id < m_profesores.count());
+
+    return m_profesores.at(id);
+}
+
+/**
+ * Registra un nuevo profesor en la base de datos y regresa
+ * el objeto que permite modificar/leer los datos del nuevo
+ * profesor.
+ */
+Profesor* AdministradorDb::registrarProfesor() {
+    Profesor* prof = new Profesor(-1);
+    m_profesores.append(prof);
+    return m_profesores.last();
+}
+
+/**
  * Regresa @c true si existe una conexión con la base de datos
  */
 bool AdministradorDb::disponible() {
@@ -63,8 +86,8 @@ bool AdministradorDb::disponible() {
 /**
  * Regresa un apuntador al objeto que administra la base de datos
  */
-QSqlDatabase* AdministradorDb::baseDeDatos() {
-    return &m_database;
+QSqlDatabase& AdministradorDb::baseDeDatos() {
+    return m_database;
 }
 
 /**
@@ -82,7 +105,7 @@ QString AdministradorDb::ubicacionBaseDeDatos() const {
 void AdministradorDb::nuevaBaseDeDatos() {
     // Obtener ubicacion para nueva base de datos
     QString db = QFileDialog::getSaveFileName(Q_NULLPTR,
-                                              tr("Guardar base de datos vacía"),
+                                              tr("Crear base de datos vacía"),
                                               QDir::homePath(),
                                               tr("Bases de Datos de Access (*.mdb *.accdb)"));
 
@@ -116,10 +139,10 @@ void AdministradorDb::cerrarBaseDeDatos() {
     // Checar que la base de datos este abierta
     if (disponible()) {
         // Obtener nombre de conexion (para quitarla despues de cerrar DB)
-        QString conexion = baseDeDatos()->connectionName();
+        QString conexion = baseDeDatos().connectionName();
 
         // Cerrar DB
-        baseDeDatos()->close();
+        baseDeDatos().close();
 
         // Quitar conexion y registrar DB vacia
         QSqlDatabase::removeDatabase(conexion);
@@ -129,10 +152,6 @@ void AdministradorDb::cerrarBaseDeDatos() {
         // Notificar UI
         emit baseDeDatosCambiada();
     }
-}
-
-void AdministradorDb::importarDbExcel() {
-
 }
 
 void AdministradorDb::mostrarEstadisticas() {
