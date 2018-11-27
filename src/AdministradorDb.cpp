@@ -111,7 +111,35 @@ void AdministradorDb::nuevaBaseDeDatos() {
 
     // Guardar template de base de datos vacía
     if (!db.isEmpty()) {
+        // Escribir datos de plantilla a base de datos de salida
+        QFile out(db);
+        if (out.open(QFile::WriteOnly)) {
+            QFile plantilla(":/db/plantilla.mdb");
+            if (plantilla.open(QFile::ReadOnly)) {
+                if (out.write(plantilla.readAll()) == plantilla.size()) {
+                    // Cerrar archivos
+                    out.close();
+                    plantilla.close();
 
+                    // Abrir base de datos
+                    configurarBaseDeDatos(db);
+
+                    // Mostrar mensaje de exito
+                    QMessageBox::information(Q_NULLPTR,
+                                             tr("Información"),
+                                             tr("La nueva base de datos fue "
+                                                "generada exitosamente!"));
+
+                    // Terminar ejecucion de funcion
+                    return;
+                }
+            }
+        }
+
+        // Registrar error
+        QMessageBox::critical(Q_NULLPTR,
+                              tr("Error"),
+                              tr("Error al crear la nueva base de datos!"));
     }
 }
 

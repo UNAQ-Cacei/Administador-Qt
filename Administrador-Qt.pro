@@ -96,7 +96,8 @@ SOURCES += \
 RESOURCES += \
     assets/qml/qml.qrc \
     assets/imagenes/imagenes.qrc \
-    assets/iconos/iconos.qrc
+    assets/iconos/iconos.qrc \
+    assets/db/db.qrc
 
 OTHER_FILES += \
     assets/qml/Dialogos/AcercaDe.qml \

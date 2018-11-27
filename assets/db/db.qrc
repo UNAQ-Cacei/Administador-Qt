@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/db">
+        <file>plantilla.mdb</file>
+    </qresource>
+</RCC>

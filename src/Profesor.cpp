@@ -59,6 +59,10 @@ Profesor::~Profesor() {
 
 }
 
+int Profesor::id() const {
+    return m_identificadorProfesor;
+}
+
 //------------------------------------------------------------------------------
 // Lectura de datos personales
 //------------------------------------------------------------------------------
@@ -533,7 +537,7 @@ QVariant Profesor::leerDato (const QString &tabla, const QString& campo) {
                       "SELECT \"%1\" FROM \"%2\" WHERE ID='%3';")
                   .arg(campo)
                   .arg(tabla)
-                  .arg(m_identificadorProfesor));
+                  .arg(id()));
 
     Q_ASSERT(query.exec());
 

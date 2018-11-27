@@ -29,7 +29,8 @@
 
 class Profesor;
 
-class AdministradorDb : public QObject {
+class AdministradorDb : public QObject
+{
     Q_OBJECT
     Q_PROPERTY (bool disponible
                 READ disponible
@@ -45,13 +46,13 @@ public:
     ~AdministradorDb();
 
     bool disponible();
-    QSqlDatabase &baseDeDatos();
+    QSqlDatabase& baseDeDatos();
     QString ubicacionBaseDeDatos() const;
 
     static AdministradorDb* instancia();
 
     Profesor* registrarProfesor();
-    Profesor* obtenerProfesor(const int id);
+    Profesor* obtenerProfesor (const int id);
 
 public slots:
     void nuevaBaseDeDatos();
@@ -60,7 +61,7 @@ public slots:
     void mostrarEstadisticas();
 
 private slots:
-    void configurarBaseDeDatos(const QString& ubicacion);
+    void configurarBaseDeDatos (const QString& ubicacion);
 
 private:
     QString m_dbUbicacion;

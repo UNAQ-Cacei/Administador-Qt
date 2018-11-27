@@ -28,7 +28,8 @@
 #include <QVariant>
 #include <QDateTime>
 
-class Profesor : public QObject {
+class Profesor : public QObject
+{
 public:
     explicit Profesor (const int id);
     ~Profesor();
@@ -47,6 +48,8 @@ public:
         EstadoCivil_Comprometido   = 0x04,
         EstadoCivil_NoEspecificado = 0x05,
     };
+
+    int id() const;
 
     /* Lectura de datos personales */
     Genero leerGenero();
@@ -141,7 +144,7 @@ public slots:
     void cambiarNumeroDeHijos (const int numHijos);
     void cambiarLugarNacimiento (const QString& lugar);
     void cambiarEstadoCivil (const EstadoCivil estado);
-    void cambiarFechaNacimiento(const QDateTime& fecha);
+    void cambiarFechaNacimiento (const QDateTime& fecha);
     void cambiarApellidoPaterno (const QString& apellido);
     void cambiarApellidoMaterno (const QString& apellido);
 
