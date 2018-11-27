@@ -60,8 +60,8 @@ Window {
         TabView {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            Layout.minimumWidth: 820
-            Layout.minimumHeight: 640
+            Layout.minimumWidth: 780
+            Layout.minimumHeight: 580
 
             Tab {
                 title: qsTr("Datos Personales")
@@ -243,8 +243,9 @@ Window {
 
                 GridLayout {
                     columns: 2
-                    rowSpacing: app.spacing
-                    columnSpacing: app.spacing
+                    rowSpacing: 0
+                    columnSpacing: 0
+                    id: formacionAcademicaControls
 
                     GroupBox {
                         Layout.fillWidth: true

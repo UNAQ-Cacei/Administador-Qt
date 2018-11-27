@@ -27,6 +27,7 @@
 #include <QDir>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QApplication>
 
 /**
  * Apuntador a la única instancia de está clase
@@ -39,6 +40,7 @@ static AdministradorDb* INSTANCE = Q_NULLPTR;
  */
 AdministradorDb::~AdministradorDb() {
     cerrarBaseDeDatos();
+    m_profesores.clear();
 }
 
 /**
@@ -60,7 +62,11 @@ AdministradorDb* AdministradorDb::instancia() {
  */
 Profesor* AdministradorDb::obtenerProfesor(const int id) {
     Q_ASSERT(id >= 0);
-    Q_ASSERT(id < m_profesores.count());
+
+    if (m_profesores.count() < id) {
+        Profesor* profesor = new Profesor (id);
+        m_profesores.append (profesor);
+    }
 
     return m_profesores.at(id);
 }
@@ -96,6 +102,13 @@ QSqlDatabase& AdministradorDb::baseDeDatos() {
  */
 QString AdministradorDb::ubicacionBaseDeDatos() const {
     return m_dbUbicacion;
+}
+
+/**
+ * @brief AdministradorDb::acercaDeQt
+ */
+void AdministradorDb::acercaDeQt() {
+    QApplication::aboutQt();
 }
 
 /**
@@ -214,12 +227,23 @@ void AdministradorDb::configurarBaseDeDatos(const QString& ubicacion) {
 
     // Crear DBQ
     QString dbq = ubicacion;
-    dbq.replace(QChar('/'), "\\");
 
     // Abrir la nueva base de datos
     m_database = QSqlDatabase::addDatabase("QODBC");
+
+    // Implementaciones para cada SO
+#if defined (Q_OS_WINDOWS)
+    dbq.replace(QChar('/'), "\\");
     m_database.setDatabaseName("Driver={Microsoft Access Driver (*.mdb, *.accdb)};"
-                               "DSN='';DBQ=" + dbq);
+                               "DSN='';DBQ=" + dbq + ";");
+#elif defined (Q_OS_LINUX)
+    m_database.setDatabaseName("Driver=MDBTools;DBQ='" + dbq + "';");
+#else
+    QMessageBox::critical(Q_NULLPTR,
+                          tr ("Error"),
+                          tr ("Este sistema operativo no está soportado por la"
+                              "aplicación!"));
+#endif
 
     // Notificar al usuario si hubo un error
     if (!m_database.open()) {

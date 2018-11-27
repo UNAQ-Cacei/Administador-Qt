@@ -52,9 +52,10 @@ public:
     static AdministradorDb* instancia();
 
     Profesor* registrarProfesor();
-    Profesor* obtenerProfesor (const int id);
+    Q_INVOKABLE Profesor* obtenerProfesor (const int id);
 
 public slots:
+    void acercaDeQt();
     void nuevaBaseDeDatos();
     void abrirBaseDeDatos();
     void cerrarBaseDeDatos();

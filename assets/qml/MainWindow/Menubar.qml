@@ -135,6 +135,7 @@ MenuBar {
         MenuItem {
             text: qsTr("Acerca de Qt")
             iconSource: "qrc:/iconos/config.svg"
+            onTriggered: CAdministradorDb.acercaDeQt()
         }
 
         MenuSeparator {}
