@@ -27,8 +27,6 @@
 #include <QtSql>
 #include <QObject>
 
-class Profesor;
-
 class AdministradorDb : public QObject
 {
     Q_OBJECT
@@ -38,8 +36,12 @@ class AdministradorDb : public QObject
     Q_PROPERTY (QString ubicacionBaseDeDatos
                 READ ubicacionBaseDeDatos
                 NOTIFY baseDeDatosCambiada)
+    Q_PROPERTY (QStringList profesores
+                READ profesores
+                NOTIFY profesoresCambiados)
 
 signals:
+    void profesoresCambiados();
     void baseDeDatosCambiada();
 
 public:
@@ -51,8 +53,16 @@ public:
 
     static AdministradorDb* instancia();
 
-    Profesor* registrarProfesor();
-    Q_INVOKABLE Profesor* obtenerProfesor (const int id);
+    QStringList profesores();
+    Q_INVOKABLE int registrarProfesor();
+    Q_INVOKABLE QString leerDato (const int id,
+                                  const QString& tabla,
+                                  const QString& identificador);
+    Q_INVOKABLE bool escribirDato (const int id,
+                                   const QString& tabla,
+                                   const QString& identificador,
+                                   const QString& valor);
+
 
 public slots:
     void acercaDeQt();
@@ -60,6 +70,13 @@ public slots:
     void abrirBaseDeDatos();
     void cerrarBaseDeDatos();
     void mostrarEstadisticas();
+    void eliminarProfesor (const int id,
+                           const bool silent);
+
+    void mostrarInfo (const QString& titulo,
+                      const QString& texto);
+    void mostrarError (const QString& titulo,
+                       const QString& texto);
 
 private slots:
     void configurarBaseDeDatos (const QString& ubicacion);
@@ -67,7 +84,6 @@ private slots:
 private:
     QString m_dbUbicacion;
     QSqlDatabase m_database;
-    QList<Profesor*> m_profesores;
 };
 
 #endif

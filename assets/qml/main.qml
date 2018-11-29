@@ -41,7 +41,7 @@ Item {
         Component.onCompleted: showNormal()
 
         onAcercaDe: acercaDe.show()
-        onNuevoProfesor: nuevoProfesor.show()
+        onNuevoProfesor: nuevoProfesor.registrarProfesor()
         onReportarError: {}
         onGenerarReporteIndividual: buscarProfesor.show()
         onModificarDatosExistentes: buscarProfesor.show()

@@ -64,9 +64,9 @@ ToolBar {
         }
 
         ToolButton {
-            enabled: CAdministradorDb.disponible
             onClicked: toolbar.modificarDatosExistentes()
             iconSource: "qrc:/iconos/editar-informacion.svg"
+            enabled: CAdministradorDb.disponible && CAdministradorDb.profesores.length > 0
         }
 
         ToolSeparator {}

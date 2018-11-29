@@ -22,7 +22,6 @@
  */
 
 #include "AdministradorDb.h"
-#include "Profesor.h"
 
 #include <QDir>
 #include <QFileDialog>
@@ -40,7 +39,6 @@ static AdministradorDb* INSTANCE = Q_NULLPTR;
  */
 AdministradorDb::~AdministradorDb() {
     cerrarBaseDeDatos();
-    m_profesores.clear();
 }
 
 /**
@@ -56,30 +54,40 @@ AdministradorDb* AdministradorDb::instancia() {
     return INSTANCE;
 }
 
-/**
- * Regresa el objeto que permite modificar/leer los datos del
- * profesor con la @a id especificada (si existe)
- */
-Profesor* AdministradorDb::obtenerProfesor(const int id) {
-    Q_ASSERT(id >= 0);
-
-    if (m_profesores.count() < id) {
-        Profesor* profesor = new Profesor (id);
-        m_profesores.append (profesor);
-    }
-
-    return m_profesores.at(id);
+QStringList AdministradorDb::profesores() {
+    QStringList profesores;
+    return profesores;
 }
+
+QString AdministradorDb::leerDato (const int id,
+                                   const QString &tabla,
+                                   const QString &identificador) {
+
+}
+
+
+bool AdministradorDb::escribirDato (const int id,
+                                    const QString &tabla,
+                                    const QString &identificador,
+                                    const QString &valor) {
+    return false;
+}
+
 
 /**
  * Registra un nuevo profesor en la base de datos y regresa
  * el objeto que permite modificar/leer los datos del nuevo
  * profesor.
  */
-Profesor* AdministradorDb::registrarProfesor() {
-    Profesor* prof = new Profesor(-1);
-    m_profesores.append(prof);
-    return m_profesores.last();
+int AdministradorDb::registrarProfesor() {
+    // Solo intentar registrar el profesor si estamos conectados
+    // a la base de datos
+    if (disponible()) {
+        return 0;
+    }
+
+    // Hubo un error al intentar registrar el nuevo profesor
+    return -1;
 }
 
 /**
@@ -138,10 +146,8 @@ void AdministradorDb::nuevaBaseDeDatos() {
                     configurarBaseDeDatos(db);
 
                     // Mostrar mensaje de exito
-                    QMessageBox::information(Q_NULLPTR,
-                                             tr("Información"),
-                                             tr("La nueva base de datos fue "
-                                                "generada exitosamente!"));
+                    mostrarInfo(tr("Información"),
+                                tr("La nueva base de datos fue generada exitosamente!"));
 
                     // Terminar ejecucion de funcion
                     return;
@@ -150,9 +156,8 @@ void AdministradorDb::nuevaBaseDeDatos() {
         }
 
         // Registrar error
-        QMessageBox::critical(Q_NULLPTR,
-                              tr("Error"),
-                              tr("Error al crear la nueva base de datos!"));
+        mostrarError(tr("Error"),
+                     tr("Error al crear la nueva base de datos!"));
     }
 }
 
@@ -199,6 +204,28 @@ void AdministradorDb::mostrarEstadisticas() {
 
 }
 
+void AdministradorDb::eliminarProfesor (const int id, const bool silent) {
+    if (!disponible())
+        mostrarError(tr("Error"),
+                     tr("No hay ninguna base de datos cargada por la aplicación!"));
+
+    else if (id > profesores().count() || id < 0)
+        mostrarError(tr("Error"),
+                     tr("No existe un profesor con ID igual a \"%1\"!").arg(id));
+
+    else {
+
+    }
+}
+
+void AdministradorDb::mostrarInfo (const QString &titulo, const QString &texto) {
+    QMessageBox::information(Q_NULLPTR, titulo, texto);
+}
+
+void AdministradorDb::mostrarError (const QString &titulo, const QString &texto) {
+    QMessageBox::warning(Q_NULLPTR, titulo, texto);
+}
+
 /**
  * Intenta establecer una conexión con la base de datos en la @a ubicacion
  * definida. Si hay un error, entonces se va a mostrar una notificacion al
@@ -207,18 +234,16 @@ void AdministradorDb::mostrarEstadisticas() {
 void AdministradorDb::configurarBaseDeDatos(const QString& ubicacion) {
     // Checar que la ubicacion no este vacía
     if (ubicacion.isEmpty()) {
-        QMessageBox::warning(Q_NULLPTR,
-                             tr("Error"),
-                             tr("La ubicación de la base de datos no puede estar vacía!"));
+        mostrarError (tr("Error"),
+                      tr("La ubicación de la base de datos no puede estar vacía!"));
         return;
     }
 
     // Checar que la base de datos existe
     QFileInfo info(ubicacion);
     if (!info.exists() || !info.isFile()) {
-        QMessageBox::warning(Q_NULLPTR,
-                             tr("Error"),
-                             tr("El archivo \"%1\" no existe!"));
+        mostrarError(tr("Error"),
+                     tr("El archivo \"%1\" no existe!"));
         return;
     }
 
@@ -239,10 +264,9 @@ void AdministradorDb::configurarBaseDeDatos(const QString& ubicacion) {
 #elif defined (Q_OS_LINUX)
     m_database.setDatabaseName("Driver=MDBTools;DBQ='" + dbq + "';");
 #else
-    QMessageBox::critical(Q_NULLPTR,
-                          tr ("Error"),
-                          tr ("Este sistema operativo no está soportado por la"
-                              "aplicación!"));
+    mostrarError(tr("Error"),
+                 tr("Este sistema operativo no está soportado por la"
+                    "aplicación!"));
 #endif
 
     // Notificar al usuario si hubo un error

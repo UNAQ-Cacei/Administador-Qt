@@ -82,10 +82,10 @@ MenuBar {
         title: qsTr("Reportes")
 
         MenuItem {
-            enabled: CAdministradorDb.disponible
             iconSource: "qrc:/iconos/reporte.svg"
             onTriggered: generarReporteIndividual()
             text: qsTr("Generar reporte individual")
+            enabled: CAdministradorDb.disponible && CAdministradorDb.profesores.length > 0
         }
 
         MenuSeparator {}
@@ -93,15 +93,15 @@ MenuBar {
         MenuItem {
             iconSource: "qrc:/iconos/auto.svg"
             onTriggered: generarReporteDeArea()
-            enabled: CAdministradorDb.disponible
             text: qsTr("Generar reporte de academia/área") + "..."
+            enabled: CAdministradorDb.disponible && CAdministradorDb.profesores.length > 0
         }
 
         MenuItem {
             iconSource: "qrc:/iconos/auto.svg"
             onTriggered: generarReporteGeneral()
-            enabled: CAdministradorDb.disponible
             text: qsTr("Generar reporte de todos los profesores")
+            enabled: CAdministradorDb.disponible && CAdministradorDb.profesores.length > 0
         }
     }
 
@@ -116,10 +116,10 @@ MenuBar {
         }
 
         MenuItem {
-            enabled: CAdministradorDb.disponible
             onTriggered: modificarDatosExistentes()
             iconSource: "qrc:/iconos/editar-informacion.svg"
             text: qsTr("Ver/Modificar datos existentes") + "..."
+            enabled: CAdministradorDb.disponible && CAdministradorDb.profesores.length > 0
         }
     }
 

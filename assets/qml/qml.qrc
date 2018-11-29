@@ -12,5 +12,6 @@
         <file>Dialogos/GenerarReporteIndividual.qml</file>
         <file>Dialogos/ModificarDatosExistentes.qml</file>
         <file>Dialogos/NuevoProfesor.qml</file>
+        <file>Componentes/DetallesProfesor.qml</file>
     </qresource>
 </RCC>
