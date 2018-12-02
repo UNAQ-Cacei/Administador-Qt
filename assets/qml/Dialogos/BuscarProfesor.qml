@@ -54,6 +54,16 @@ Window {
     minimumHeight: layout.implicitHeight + 2 * app.spacing
 
     //
+    // Mostrar lista de todos los profesores cuando se muestra la ventana
+    //
+    onVisibleChanged: {
+        if (visible) {
+            nombre.text = ""
+            resultados.model = CAdministradorDb.profesores
+        }
+    }
+
+    //
     // Controles del dialogo
     //
     ColumnLayout {
@@ -67,9 +77,14 @@ Window {
         }
 
         TextField {
+            id: nombre
             Layout.fillWidth: true
             Layout.minimumWidth: 250
             placeholderText: qsTr("Escribir un nombre") + "..."
+
+            onTextChanged: {
+                resultados.model = CAdministradorDb.profesores
+            }
         }
 
         Label {

@@ -82,6 +82,10 @@ private slots:
     void configurarBaseDeDatos (const QString& ubicacion);
 
 private:
+    QList<QList<QVariant>> ejecutarConsulta (const QStringList campos,
+                                             const QString tabla);
+
+private:
     QString m_dbUbicacion;
     QSqlDatabase m_database;
 };
