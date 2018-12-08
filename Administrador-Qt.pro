@@ -84,14 +84,12 @@ linux:!android {
 HEADERS += \
     src/AppInfo.h \
     src/AdministradorDb.h \
-    src/GeneradorPDF.h \
-    src/Profesor.h
+    src/GeneradorPDF.h
 
 SOURCES += \
     src/AdministradorDb.cpp \
     src/GeneradorPDF.cpp \
-    src/main.cpp \
-    src/Profesor.cpp
+    src/main.cpp
 
 RESOURCES += \
     assets/qml/qml.qrc \

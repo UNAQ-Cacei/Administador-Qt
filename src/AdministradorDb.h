@@ -61,7 +61,8 @@ public:
     Q_INVOKABLE bool escribirDato (const int id,
                                    const QString& tabla,
                                    const QString& identificador,
-                                   const QString& valor);
+                                   const QString& valor,
+                                   const bool obligatorio = true);
 
 
 public slots:

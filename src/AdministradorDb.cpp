@@ -117,8 +117,11 @@ QString AdministradorDb::leerDato (const int id,
 
     // Ejecutar consulta
     QSqlQuery query;
-    if (query.exec(commando) && query.next())
-        return query.value(0).toString();
+    if (query.exec(commando) && query.next()) {
+        QString str = query.value(0).toString();
+        query.finish();
+        return str;
+    }
 
     // Regresar valor vacio
     return "";
@@ -128,7 +131,36 @@ QString AdministradorDb::leerDato (const int id,
 bool AdministradorDb::escribirDato (const int id,
                                     const QString &tabla,
                                     const QString &identificador,
-                                    const QString &valor) {
+                                    const QString &valor,
+                                    const bool obligatorio) {
+    // Terminar funcion si la base de datos no esta abierta y configurada
+    // o la identificacion del profesor es invalida
+    if (!disponible() || id < 0)
+        return false;
+
+    // Verificar argumentos
+    if (tabla.isEmpty() || identificador.isEmpty())
+        return false;
+
+    // Checar dato si el valor es obligatorio
+    if (obligatorio && valor.isEmpty())
+        return false;
+
+    // Generar commando
+    QString commando = tr("INSERT INTO [%1] ([%2]) VALUES ('%3');")
+            .arg(tabla)
+            .arg(identificador)
+            .arg(valor);
+
+    // Ejecutar commando
+    QSqlQuery query;
+    if (query.exec(commando)) {
+        query.finish();
+        emit profesoresCambiados();
+        return true;
+    }
+
+    // Regresar error
     return false;
 }
 

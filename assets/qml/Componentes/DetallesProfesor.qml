@@ -31,7 +31,7 @@ TabView {
     Layout.minimumHeight: 580
 
     function leerDatos(id) {
-        if (CAdministradorDb.disponible && CAdministradorDb.profesores.length > id) {
+        if (CAdministradorDb.disponible) {
 
         }
 
@@ -42,9 +42,11 @@ TabView {
     }
 
     function guardarDatos(id) {
-        if (CAdministradorDb.disponible && CAdministradorDb.profesores.length > id) {
-            var ok = true
+        // Si la base de datos no esta disponible, ya empezamos mal...
+        var ok = CAdministradorDb.disponible
 
+        // DB disponible, guardar datos
+        if (ok) {
             // Escribir datos personales
             ok &= CAdministradorDb.escribirDato(id, "Datos Personales", "Nombres", nombres.text)
 
@@ -65,115 +67,123 @@ TabView {
             }
         }
 
-        CAdministradorDb.mostrarError(qsTr("Error"),
-                                      qsTr("Hubo un error al intentar guardar los datos " +
-                                           "del profesor con el ID %1").arg(id))
-        return false
+        // Hubo un error al intentar guardar los datos
+        if (!ok) {
+            CAdministradorDb.mostrarError(qsTr("Error"),
+                                          qsTr("Hubo un error al intentar guardar los datos " +
+                                               "del profesor con el ID %1").arg(id))
+        }
     }
 
     Tab {
         title: qsTr("Datos Personales")
 
-        ColumnLayout {
-            GridLayout {
-                columns: 2
+        GridLayout {
+            columns: 2
+            rowSpacing: app.spacing
+            columnSpacing: app.spacing
+            Layout.margins: 2 * app.spacing
+
+            anchors {
+                fill: parent
+                margins: 2 * app.spacing
+            }
+
+            Label {
+                text: qsTr ("Nombres") + ":"
+                horizontalAlignment: Label.AlignRight
+            }
+
+            TextField {
+                id: nombres
                 Layout.fillWidth: true
-                rowSpacing: app.spacing
-                columnSpacing: app.spacing
-                Layout.margins: 2 * app.spacing
+            }
 
-                Label {
-                    text: qsTr ("Nombres") + ":"
-                    horizontalAlignment: Label.AlignRight
-                }
+            Label {
+                text: qsTr ("Apellido Paterno") + ":"
+                horizontalAlignment: Label.AlignRight
+            }
 
-                TextField {
-                    id: nombres
-                    Layout.fillWidth: true
-                }
+            TextField {
+                id: apPaterno
+                Layout.fillWidth: true
+            }
 
-                Label {
-                    text: qsTr ("Apellido Paterno") + ":"
-                    horizontalAlignment: Label.AlignRight
-                }
+            Label {
+                text: qsTr ("Apellido Materno") + ":"
+                horizontalAlignment: Label.AlignRight
+            }
 
-                TextField {
-                    id: apPaterno
-                    Layout.fillWidth: true
-                }
+            TextField {
+                id: apMaterno
+                Layout.fillWidth: true
+            }
 
-                Label {
-                    text: qsTr ("Apellido Materno") + ":"
-                    horizontalAlignment: Label.AlignRight
-                }
+            Label {
+                text: qsTr ("Fecha de Nacimiento") + ":"
+                horizontalAlignment: Label.AlignRight
+            }
 
-                TextField {
-                    id: apMaterno
-                    Layout.fillWidth: true
-                }
+            TextField {
+                id: fechaNacimiento
+                Layout.fillWidth: true
+            }
 
-                Label {
-                    text: qsTr ("Fecha de Nacimiento") + ":"
-                    horizontalAlignment: Label.AlignRight
-                }
+            Label {
+                text: qsTr ("Lugar de Nacimiento") + ":"
+                horizontalAlignment: Label.AlignRight
+            }
 
-                TextField {
-                    id: fechaNacimiento
-                    Layout.fillWidth: true
-                }
+            TextField {
+                id: lugarNacimiento
+                Layout.fillWidth: true
+            }
 
-                Label {
-                    text: qsTr ("Lugar de Nacimiento") + ":"
-                    horizontalAlignment: Label.AlignRight
-                }
+            Label {
+                text: qsTr ("Género") + ":"
+                horizontalAlignment: Label.AlignRight
+            }
 
-                TextField {
-                    id: lugarNacimiento
-                    Layout.fillWidth: true
-                }
+            ComboBox {
+                id: genero
+                Layout.fillWidth: true
+                model: [
+                    qsTr("Femenino"),
+                    qsTr("Masculino"),
+                    qsTr("No Especificado")
+                ]
+            }
 
-                Label {
-                    text: qsTr ("Género") + ":"
-                    horizontalAlignment: Label.AlignRight
-                }
+            Label {
+                text: qsTr ("Número de Hijos") + ":"
+                horizontalAlignment: Label.AlignRight
+            }
 
-                ComboBox {
-                    id: genero
-                    Layout.fillWidth: true
-                    model: [
-                        qsTr("Femenino"),
-                        qsTr("Masculino"),
-                        qsTr("No Especificado")
-                    ]
-                }
+            TextField {
+                id: numHijos
+                Layout.fillWidth: true
+            }
 
-                Label {
-                    text: qsTr ("Número de Hijos") + ":"
-                    horizontalAlignment: Label.AlignRight
-                }
+            Label {
+                text: qsTr ("Estado Civil") + ":"
+                horizontalAlignment: Label.AlignRight
+            }
 
-                TextField {
-                    id: numHijos
-                    Layout.fillWidth: true
-                }
+            ComboBox {
+                id: estadoCivil
+                Layout.fillWidth: true
+                model: [
+                    qsTr("Casado/a"),
+                    qsTr("Divorciado/a"),
+                    qsTr("Soltero/a"),
+                    qsTr("Viudo/a"),
+                    qsTr("Comprometido/a"),
+                    qsTr("No Especificado")
+                ]
+            }
 
-                Label {
-                    text: qsTr ("Estado Civil") + ":"
-                    horizontalAlignment: Label.AlignRight
-                }
-
-                ComboBox {
-                    id: estadoCivil
-                    Layout.fillWidth: true
-                    model: [
-                        qsTr("Casado/a"),
-                        qsTr("Divorciado/a"),
-                        qsTr("Soltero/a"),
-                        qsTr("Viudo/a"),
-                        qsTr("Comprometido/a"),
-                        qsTr("No Especificado")
-                    ]
-                }
+            Item {
+                Layout.fillHeight: true
             }
 
             Item {
@@ -185,78 +195,79 @@ TabView {
     Tab {
         title: qsTr("Datos Generales")
 
-        ColumnLayout {
-            GridLayout {
-                columns: 2
+        GridLayout {
+            columns: 2
+            rowSpacing: app.spacing
+            columnSpacing: app.spacing
+
+            anchors {
+                fill: parent
+                margins: 2 * app.spacing
+            }
+
+            Label {
+                horizontalAlignment: Label.AlignRight
+                text: qsTr ("Número de Empleado") + ":"
+            }
+
+            TextField {
+                id: numEmpleado
                 Layout.fillWidth: true
-                rowSpacing: app.spacing
-                columnSpacing: app.spacing
-                Layout.margins: 2 * app.spacing
-
-                Label {
-                    horizontalAlignment: Label.AlignRight
-                    text: qsTr ("Número de Empleado") + ":"
-                }
-
-                TextField {
-                    id: numEmpleado
-                    Layout.fillWidth: true
-                }
-
-                Label {
-                    text: qsTr("Categoría de Contratación") + ":"
-                    horizontalAlignment: Label.AlignRight
-                }
-
-                TextField {
-                    id: catContratacion
-                    Layout.fillWidth: true
-                }
-
-                Label {
-                    text: qsTr("Contratación por Plaza") + ":"
-                    horizontalAlignment: Label.AlignRight
-                }
-
-                CheckBox {
-                    id: contratacionPorPlaza
-                    Layout.fillWidth: true
-                }
-
-                Label {
-                    text: qsTr("Antigüedad en la Institución") + ":"
-                    horizontalAlignment: Label.AlignRight
-                }
-
-                TextField {
-                    id: antiguedadInst
-                    Layout.fillWidth: true
-                }
-
-                Label {
-                    text: qsTr("Adscripción") + ":"
-                    horizontalAlignment: Label.AlignRight
-                }
-
-                TextField {
-                    id: adscripcion
-                    Layout.fillWidth: true
-                }
-
-                Label {
-                    text: qsTr("Programa(s) Impartido(s)") + ":"
-                    horizontalAlignment: Label.AlignRight
-                }
-
-                TextField {
-                    id: programasImpartidos
-                    Layout.fillWidth: true
-                }
             }
 
-            Item {
-                Layout.fillHeight: true
+            Label {
+                text: qsTr("Categoría de Contratación") + ":"
+                horizontalAlignment: Label.AlignRight
             }
+
+            TextField {
+                id: catContratacion
+                Layout.fillWidth: true
+            }
+
+            Label {
+                text: qsTr("Contratación por Plaza") + ":"
+                horizontalAlignment: Label.AlignRight
+            }
+
+            CheckBox {
+                id: contratacionPorPlaza
+                Layout.fillWidth: true
+            }
+
+            Label {
+                text: qsTr("Antigüedad en la Institución") + ":"
+                horizontalAlignment: Label.AlignRight
+            }
+
+            TextField {
+                id: antiguedadInst
+                Layout.fillWidth: true
+            }
+
+            Label {
+                text: qsTr("Adscripción") + ":"
+                horizontalAlignment: Label.AlignRight
+            }
+
+            TextField {
+                id: adscripcion
+                Layout.fillWidth: true
+            }
+
+            Label {
+                text: qsTr("Programa(s) Impartido(s)") + ":"
+                horizontalAlignment: Label.AlignRight
+            }
+
+            TextField {
+                id: programasImpartidos
+                Layout.fillWidth: true
+            }
+        }
+
+        Item {
+            Layout.fillHeight: true
         }
     }
 
