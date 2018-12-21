@@ -21,6 +21,6 @@
  * CONEXIÓN CON EL SOFTWARE O SU USO U OTRO TIPO DE ACCIONES EN EL SOFTWARE.
  */
 
-#define APP_VERSION "0.1 Alpha"
+#define APP_VERSION "0.2 Alpha"
 #define APP_NAME "Administrador CACEI"
 #define APP_ORGANIZATION "Universidad Aeronáutica en Querétaro"

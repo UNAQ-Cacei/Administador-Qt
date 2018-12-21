@@ -309,10 +309,16 @@ void AdministradorDb::eliminarProfesor (const int id, const bool silent) {
     }
 }
 
+/**
+ * Genera un message box para fines informativos
+ */
 void AdministradorDb::mostrarInfo (const QString &titulo, const QString &texto) {
     QMessageBox::information(Q_NULLPTR, titulo, texto);
 }
 
+/**
+ * Genera un message box para fines de reporte de errores
+ */ 
 void AdministradorDb::mostrarError (const QString &titulo, const QString &texto) {
     QMessageBox::warning(Q_NULLPTR, titulo, texto);
 }
