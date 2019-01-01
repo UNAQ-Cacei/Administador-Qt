@@ -40,7 +40,7 @@ ApplicationWindow {
     //
     // Definir titulo de la ventana
     //
-    title: CAdministradorDb.disponible ? qsTr("%1 - %2").arg(CAdministradorDb.ubicacionBaseDeDatos).arg(AppName) : AppName
+    title: AppName
 
     //
     // Definir señales
@@ -107,11 +107,25 @@ ApplicationWindow {
     // Centro de bienvenida
     //
     ColumnLayout {
+        //
+        // Esconder y deshabilitar el centro de bienvenida si
+        // la base de datos esta abierta
+        //
+        enabled: opacity > 0
+        opacity: CAdministradorDb.disponible ? 0 : 1
+        Behavior on opacity { NumberAnimation{} }
+
+        //
+        // Expandir el centro de bienvenida por toda la ventana
+        //
         anchors {
             fill: parent
             margins: app.spacing
         }
 
+        //
+        // Definir espacio entre controles
+        //
         spacing: app.spacing
 
         //
@@ -183,6 +197,93 @@ ApplicationWindow {
         //
         Item {
             Layout.fillHeight: true
+        }
+    }
+
+    //
+    // Visualizador de base de datos
+    //
+    RowLayout {
+        //
+        // Mostrar y habilitar el visualizador si la base de datos esta abierta
+        //
+        enabled: opacity > 0
+        opacity: CAdministradorDb.disponible ? 1 : 0
+        Behavior on opacity { NumberAnimation{} }
+
+        //
+        // Expandir el visualizador por toda la ventana
+        //
+        anchors {
+            fill: parent
+            margins: app.spacing
+        }
+
+        //
+        // Definir espacio entre controles
+        //
+        spacing: app.spacing
+
+        //
+        // Seleccionador de profesores
+        //
+        TabView {
+            Layout.fillWidth: false
+            Layout.fillHeight: true
+
+            Tab {
+                title: qsTr ("Profesores")
+
+                ColumnLayout {
+                    spacing: app.spacing
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+
+                    Repeater {
+                        model: CAdministradorDb.profesores
+                        delegate: Label {
+                            text: data
+                        }
+                    }
+                }
+            }
+        }
+
+        //
+        // Tabla seleccionada
+        //
+        TabView {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+
+            Tab {
+                title: qsTr ("Datos de Tabla")
+
+                TabView {
+                    anchors.fill: parent
+                    anchors.margins: -1
+                }
+            }
+        }
+    }
+
+    //
+    // Barra de estado
+    //
+    statusBar: StatusBar {
+        visible: enabled
+        enabled: opacity > 0
+        opacity: CAdministradorDb.disponible ? 1 : 0
+        Behavior on opacity { NumberAnimation{} }
+
+        Label {
+            text: qsTr("Ubicación de DB: %1").arg (CAdministradorDb.ubicacionBaseDeDatos)
+
+            anchors {
+                left: parent.left
+                leftMargin: app.spacing
+                verticalCenter: parent.verticalCenter
+            }
         }
     }
 }

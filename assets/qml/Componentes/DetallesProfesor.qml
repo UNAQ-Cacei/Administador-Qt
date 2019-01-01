@@ -30,6 +30,14 @@ TabView {
     Layout.minimumWidth: 780
     Layout.minimumHeight: 580
 
+    //--------------------------------------------------------------------//
+    // FUNCIONES DE LECTURA Y ESCRITURA DE INFORMACION A LA BASE DE DATOS //
+    //--------------------------------------------------------------------//
+
+    //
+    // Lee y carga los datos del profesor con la @a id especificada
+    // en los controles de la interfaz grafica
+    //
     function leerDatos(id) {
         if (CAdministradorDb.disponible) {
 
@@ -41,40 +49,57 @@ TabView {
         }
     }
 
+    //
+    // Actualiza los datos del profesor con la @a id especificada con los valores
+    // especificados en los controles de la interfaz grafica
+    //
     function guardarDatos(id) {
         // Si la base de datos no esta disponible, ya empezamos mal...
         var ok = CAdministradorDb.disponible
+        if (!ok) {
+            CAdministradorDb.mostrarError(qsTr("Error"),
+                                          qsTr("La base de datos no está disponible, por " +
+                                               "lo cuál no se pueden guardar los datos del " +
+                                               "profesor con el ID %1").arg(id))
+            return
+        }
 
-        // DB disponible, guardar datos
+        // Escribir datos personales
+        ok &= CAdministradorDb.escribirDato(id, "Datos Personales", "Nombres", "Alex")
+        //ok &= CAdministradorDb.escribirDato(id, "Datos Personales", "Ap. Paterno", apPaterno.text)
+        //ok &= CAdministradorDb.escribirDato(id, "Datos Personales", "Ap. Materno", apMaterno.text)
+
+        // Escribir datos generales
+
+        // Escribir datos de licenciatura
+
+        // Escribir datos de maestria
+
+        // Escribir datos de doctorado
+
+        // Escribir datos de especialidad
+
+        // Mostrar dialogo de exito
         if (ok) {
-            // Escribir datos personales
-            ok &= CAdministradorDb.escribirDato(id, "Datos Personales", "Nombres", nombres.text)
-
-            // Escribir datos generales
-
-            // Escribir datos de licenciatura
-
-            // Escribir datos de maestria
-
-            // Escribir datos de doctorado
-
-            // Escribir datos de especialidad
-
-            // Mostrar dialogo de exito
-            if (ok) {
-                CAdministradorDb.mostrarInfo(qsTr("Información"),
-                                             qsTr("Los datos del profesor fueron actualizados exitosamente"))
-            }
+            CAdministradorDb.mostrarInfo(qsTr("Información"),
+                                         qsTr("Los datos del profesor fueron actualizados exitosamente"))
         }
 
         // Hubo un error al intentar guardar los datos
-        if (!ok) {
+        else {
             CAdministradorDb.mostrarError(qsTr("Error"),
                                           qsTr("Hubo un error al intentar guardar los datos " +
                                                "del profesor con el ID %1").arg(id))
         }
     }
 
+    //------------------------------------------------------------------//
+    // DEFINICION Y PROPIEDADES DE LOS CONTROLES DE LA INTERFAZ GRAFICA //
+    //------------------------------------------------------------------//
+
+    //
+    // Pestaña de datos personales
+    //
     Tab {
         title: qsTr("Datos Personales")
 
@@ -89,62 +114,68 @@ TabView {
                 margins: 2 * app.spacing
             }
 
+            //
+            // Nombres
+            //
             Label {
                 text: qsTr ("Nombres") + ":"
                 horizontalAlignment: Label.AlignRight
-            }
-
-            TextField {
+            } TextField {
                 id: nombres
                 Layout.fillWidth: true
             }
 
+            //
+            // Apellido paterno
+            //
             Label {
                 text: qsTr ("Apellido Paterno") + ":"
                 horizontalAlignment: Label.AlignRight
-            }
-
-            TextField {
+            } TextField {
                 id: apPaterno
                 Layout.fillWidth: true
             }
 
+            //
+            // Apellido materno
+            //
             Label {
                 text: qsTr ("Apellido Materno") + ":"
                 horizontalAlignment: Label.AlignRight
-            }
-
-            TextField {
+            } TextField {
                 id: apMaterno
                 Layout.fillWidth: true
             }
 
+            //
+            // Fecha de nacimiento
+            //
             Label {
                 text: qsTr ("Fecha de Nacimiento") + ":"
                 horizontalAlignment: Label.AlignRight
-            }
-
-            TextField {
+            } TextField {
                 id: fechaNacimiento
                 Layout.fillWidth: true
             }
 
+            //
+            // Lugar de nacimiento
+            //
             Label {
                 text: qsTr ("Lugar de Nacimiento") + ":"
                 horizontalAlignment: Label.AlignRight
-            }
-
-            TextField {
+            } TextField {
                 id: lugarNacimiento
                 Layout.fillWidth: true
             }
 
+            //
+            // Genero
+            //
             Label {
                 text: qsTr ("Género") + ":"
                 horizontalAlignment: Label.AlignRight
-            }
-
-            ComboBox {
+            } ComboBox {
                 id: genero
                 Layout.fillWidth: true
                 model: [
@@ -154,22 +185,24 @@ TabView {
                 ]
             }
 
+            //
+            // Numero de hijos
+            //
             Label {
                 text: qsTr ("Número de Hijos") + ":"
                 horizontalAlignment: Label.AlignRight
-            }
-
-            TextField {
+            } TextField {
                 id: numHijos
                 Layout.fillWidth: true
             }
 
+            //
+            // Estado civil
+            //
             Label {
                 text: qsTr ("Estado Civil") + ":"
                 horizontalAlignment: Label.AlignRight
-            }
-
-            ComboBox {
+            } ComboBox {
                 id: estadoCivil
                 Layout.fillWidth: true
                 model: [
@@ -182,16 +215,17 @@ TabView {
                 ]
             }
 
-            Item {
-                Layout.fillHeight: true
-            }
-
-            Item {
-                Layout.fillHeight: true
-            }
+            //
+            // Espaciadores
+            //
+            Item { Layout.fillHeight: true }
+            Item { Layout.fillHeight: true }
         }
     }
 
+    //
+    // Pestaña de datos generales
+    //
     Tab {
         title: qsTr("Datos Generales")
 
@@ -205,72 +239,82 @@ TabView {
                 margins: 2 * app.spacing
             }
 
+            //
+            // Numero de empleado
+            //
             Label {
                 horizontalAlignment: Label.AlignRight
                 text: qsTr ("Número de Empleado") + ":"
-            }
-
-            TextField {
+            } TextField {
                 id: numEmpleado
                 Layout.fillWidth: true
             }
 
+            //
+            // Categoria de contratacion
+            //
             Label {
                 text: qsTr("Categoría de Contratación") + ":"
                 horizontalAlignment: Label.AlignRight
-            }
-
-            TextField {
+            } TextField {
                 id: catContratacion
                 Layout.fillWidth: true
             }
 
+            //
+            // Contratacion por plaza
+            //
             Label {
                 text: qsTr("Contratación por Plaza") + ":"
                 horizontalAlignment: Label.AlignRight
-            }
-
-            CheckBox {
+            } CheckBox {
                 id: contratacionPorPlaza
                 Layout.fillWidth: true
             }
 
+            //
+            // Ant. en la universidad
+            //
             Label {
                 text: qsTr("Antigüedad en la Institución") + ":"
                 horizontalAlignment: Label.AlignRight
-            }
-
-            TextField {
+            } TextField {
                 id: antiguedadInst
                 Layout.fillWidth: true
             }
 
+            //
+            // Adscripcion
+            //
             Label {
                 text: qsTr("Adscripción") + ":"
                 horizontalAlignment: Label.AlignRight
-            }
-
-            TextField {
+            } TextField {
                 id: adscripcion
                 Layout.fillWidth: true
             }
 
+            //
+            // Programas impartudos
+            //
             Label {
                 text: qsTr("Programa(s) Impartido(s)") + ":"
                 horizontalAlignment: Label.AlignRight
-            }
-
-            TextField {
+            } TextField {
                 id: programasImpartidos
                 Layout.fillWidth: true
             }
         }
 
-        Item {
-            Layout.fillHeight: true
-        }
+        //
+        // Espaciador
+        //
+        Item { Layout.fillHeight: true }
     }
 
+    //
+    // Pestaña de formacion academica
+    //
     Tab {
         title: qsTr("Formación Académica")
 
@@ -280,6 +324,9 @@ TabView {
             columnSpacing: 0
             id: formacionAcademicaControls
 
+            //
+            // Controles de licenciatura
+            //
             GroupBox {
                 Layout.fillWidth: true
 
@@ -355,6 +402,9 @@ TabView {
                 }
             }
 
+            //
+            // Controles de maestria
+            //
             GroupBox {
                 Layout.fillWidth: true
 
@@ -440,6 +490,9 @@ TabView {
                 }
             }
 
+            //
+            // Controles de doctorado
+            //
             GroupBox {
                 Layout.fillWidth: true
 
@@ -515,6 +568,9 @@ TabView {
                 }
             }
 
+            //
+            // Controles de especialidad
+            //
             GroupBox {
                 Layout.fillWidth: true
 
@@ -592,10 +648,16 @@ TabView {
         }
     }
 
+    //
+    // Pestaña de cursos/certificaciones
+    //
     Tab {
         title: qsTr("Cursos y Certificaciones")
     }
 
+    //
+    // Pestaña de experiencia laboral
+    //
     Tab {
         title: qsTr("Experiencia")
     }

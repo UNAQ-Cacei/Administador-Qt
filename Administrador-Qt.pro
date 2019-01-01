@@ -97,20 +97,3 @@ RESOURCES += \
     assets/iconos/iconos.qrc \
     assets/db/db.qrc
 
-OTHER_FILES += \
-    assets/qml/Dialogos/AcercaDe.qml \
-    assets/qml/MainWindow/Toolbar.qml \
-    assets/qml/main.qml \
-    assets/qml/MainWindow/MainWindow.qml \
-    assets/qml/MainWindow/Menubar.qml \ 
-    assets/qml/MainWindow/ToolSeparator.qml
-
-DISTFILES += \
-    assets/qml/Dialogos/BuscarProfesor.qml \
-    assets/qml/Dialogos/GenerarReporte.qml \
-    assets/qml/Dialogos/GenerarReporteDeArea.qml \
-    assets/qml/Dialogos/GenerarReporteIndividual.qml \
-    assets/qml/Dialogos/ModificarDatosExistentes.qml \
-    assets/qml/Dialogos/NuevoProfesor.qml
-
-

@@ -73,7 +73,7 @@ QStringList AdministradorDb::profesores() {
         // Solo registrar el profesor si las listas de apellidos tiene
         // el mismo numero de elementos que la lista de nombres
         if (nombres.length() == apellidosMaternos.length() &&
-            nombres.length() == apellidosPaternos.length()) {
+                nombres.length() == apellidosPaternos.length()) {
             // Registrar nombre de cada profesor (mientras esten marcados
             // como profesores activos en la institucion)
             for (int i = 0; i < apellidosPaternos.length(); ++i) {
@@ -135,32 +135,43 @@ bool AdministradorDb::escribirDato (const int id,
                                     const bool obligatorio) {
     // Terminar funcion si la base de datos no esta abierta y configurada
     // o la identificacion del profesor es invalida
-    if (!disponible() || id < 0)
+    if (!disponible() || id < 0) {
+        qDebug() << Q_FUNC_INFO << "id invalida";
         return false;
+    }
 
     // Verificar argumentos
-    if (tabla.isEmpty() || identificador.isEmpty())
+    if (tabla.isEmpty() || identificador.isEmpty()) {
+        qDebug() << Q_FUNC_INFO << "datos de identificacion invalidos";
         return false;
+    }
 
     // Checar dato si el valor es obligatorio
-    if (obligatorio && valor.isEmpty())
+    if (obligatorio && valor.isEmpty()) {
+        qDebug() << Q_FUNC_INFO << "el campo " << identificador << " es obligatorio!";
         return false;
+    }
 
     // Generar commando
-    QString commando = tr("INSERT INTO [%1] ([%2]) VALUES ('%3');")
+    QString cmdSql = tr("INSERT INTO [%1] ([%2]) VALUES ('%3');")
             .arg(tabla)
             .arg(identificador)
             .arg(valor);
 
     // Ejecutar commando
     QSqlQuery query;
-    if (query.exec(commando)) {
+    if (query.exec(cmdSql)) {
         query.finish();
         emit profesoresCambiados();
         return true;
     }
 
     // Regresar error
+    qDebug() << "[ERROR] @ " << Q_FUNC_INFO << ": "
+             << query.lastError().text()
+             << "\n\t"
+             << "Comando SQL: "
+             << cmdSql;
     return false;
 }
 
@@ -318,7 +329,7 @@ void AdministradorDb::mostrarInfo (const QString &titulo, const QString &texto) 
 
 /**
  * Genera un message box para fines de reporte de errores
- */ 
+ */
 void AdministradorDb::mostrarError (const QString &titulo, const QString &texto) {
     QMessageBox::warning(Q_NULLPTR, titulo, texto);
 }
