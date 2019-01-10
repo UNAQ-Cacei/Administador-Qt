@@ -63,6 +63,7 @@ public:
                                    const QString& identificador,
                                    const QString& valor,
                                    const bool obligatorio = true);
+    Q_INVOKABLE bool checarExistenciaProfesor (const int id);
 
 
 public slots:

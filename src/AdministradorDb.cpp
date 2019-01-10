@@ -106,7 +106,7 @@ QString AdministradorDb::leerDato (const int id,
                                    const QString &identificador) {
     // Terminar funcion si la base de datos no esta abierta y configurada
     // o la identificacion del profesor es invalida
-    if (!disponible() || id < 0)
+    if (!checarExistenciaProfesor (id))
         return "";
 
     // Generar commando
@@ -135,7 +135,7 @@ bool AdministradorDb::escribirDato (const int id,
                                     const bool obligatorio) {
     // Terminar funcion si la base de datos no esta abierta y configurada
     // o la identificacion del profesor es invalida
-    if (!disponible() || id < 0) {
+    if (!checarExistenciaProfesor (id)) {
         qDebug() << Q_FUNC_INFO << "id invalida";
         return false;
     }
@@ -175,6 +175,12 @@ bool AdministradorDb::escribirDato (const int id,
     return false;
 }
 
+/**
+ * Regresa verdadero si el profesor existe en la base de datos
+ */
+bool AdministradorDb::checarExistenciaProfesor(const int id) {
+    return disponible() && id >= 0;
+}
 
 /**
  * Registra un nuevo profesor en la base de datos y regresa

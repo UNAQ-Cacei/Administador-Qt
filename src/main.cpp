@@ -34,7 +34,7 @@ int main(int argc, char** argv) {
     QApplication::setApplicationName(APP_NAME);
     QApplication::setApplicationVersion(APP_VERSION);
     QApplication::setOrganizationName(APP_ORGANIZATION);
-    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QApplication::setAttribute(Qt::AA_DisableHighDpiScaling);
 
     // Crear aplicacion
     QApplication app(argc, argv);
