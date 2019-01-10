@@ -432,6 +432,9 @@ void AdministradorDb::eliminarProfesor (const int id,
                 query.finish();
         }
 
+        // TODO: Cambiar la ID de los profesores con ID mayor al profesor
+        //       eliminado para evitar problemas con la UI
+
         // Actualizar lista de profesores
         emit profesoresCambiados();
     }
