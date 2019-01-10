@@ -43,7 +43,6 @@ static const QStringList TABLAS = {
     "Experiencia Laboral"
 };
 
-
 /**
  * Apuntador a la única instancia de está clase
  */
@@ -52,7 +51,8 @@ static AdministradorDb* INSTANCE = Q_NULLPTR;
 /**
  * @brief AdministradorDb::AdministradorDb
  */
-AdministradorDb::AdministradorDb() {
+AdministradorDb::AdministradorDb()
+{
     // Actualizar lista de profesores cuando abrimos/cerramos DB
     connect (this, &AdministradorDb::baseDeDatosCambiada,
              this, &AdministradorDb::profesoresCambiados);
@@ -62,7 +62,8 @@ AdministradorDb::AdministradorDb() {
  * Cierra la base de datos antes de que la clase
  * sea destruída
  */
-AdministradorDb::~AdministradorDb() {
+AdministradorDb::~AdministradorDb()
+{
     cerrarBaseDeDatos();
 }
 
@@ -72,7 +73,8 @@ AdministradorDb::~AdministradorDb() {
  * una sola instancia para evitar errores al intentar
  * abrir o manejar la base de datos.
  */
-AdministradorDb* AdministradorDb::instancia() {
+AdministradorDb* AdministradorDb::instancia()
+{
     if (INSTANCE == Q_NULLPTR)
         INSTANCE = new AdministradorDb();
 
@@ -82,23 +84,24 @@ AdministradorDb* AdministradorDb::instancia() {
 /**
  * Regresa una lista con los nombres completos de los profesores activos
  */
-QStringList AdministradorDb::profesores() {
+QStringList AdministradorDb::profesores()
+{
     QStringList profesores;
     QStringList campos = {"ID", "Apellido Paterno", "Apellido Materno", "Nombres"};
-    QList<QList<QVariant>> consulta = ejecutarConsulta(campos, "Datos Personales");
+    QList<QList<QVariant>> consulta = ejecutarConsulta (campos, "Datos Personales");
 
     // Validar resultados
     if (consulta.length() == campos.length()) {
         // Obtener lista de apellidos y nombres
         QList<QVariant> ids = consulta.at (0);
-        QList<QVariant> apellidosPaternos = consulta.at(1);
-        QList<QVariant> apellidosMaternos = consulta.at(2);
-        QList<QVariant> nombres = consulta.at(3);
+        QList<QVariant> apellidosPaternos = consulta.at (1);
+        QList<QVariant> apellidosMaternos = consulta.at (2);
+        QList<QVariant> nombres = consulta.at (3);
 
         // Solo registrar el profesor si las listas de apellidos tiene
         // el mismo numero de elementos que la lista de nombres
         if (nombres.length() == apellidosMaternos.length() &&
-                nombres.length() == apellidosPaternos.length()) {
+            nombres.length() == apellidosPaternos.length()) {
             // Registrar nombre de cada profesor (mientras esten marcados
             // como profesores activos en la institucion)
             for (int i = 0; i < apellidosPaternos.length(); ++i) {
@@ -106,11 +109,11 @@ QStringList AdministradorDb::profesores() {
                 bool activo = (leerDato (ids.at (i).toInt(), "Datos Generales", "Activo") == "1");
 
                 // Registrar nombre
-                profesores.append(tr("%1 %2 %3 %4")
-                                  .arg(activo ? "" : tr("[INACTIVO]"))
-                                  .arg(apellidosPaternos.at(i).toString())
-                                  .arg(apellidosMaternos.at(i).toString())
-                                  .arg(nombres.at(i).toString()));
+                profesores.append (tr ("%1 %2 %3 %4")
+                                   .arg (activo ? "" : tr ("[INACTIVO]"))
+                                   .arg (apellidosPaternos.at (i).toString())
+                                   .arg (apellidosMaternos.at (i).toString())
+                                   .arg (nombres.at (i).toString()));
             }
         }
     }
@@ -122,19 +125,20 @@ QStringList AdministradorDb::profesores() {
 /**
  * Regresa la lista de profesores que contienen el @a nombre definido
  */
-QStringList AdministradorDb::buscar (const QString& nombre) {
+QStringList AdministradorDb::buscar (const QString& nombre)
+{
     // No hay termino de busqueda, regresar lista completa de profesores
     if (nombre.isEmpty())
         return profesores();
 
     // El termino de busqueda consta de espacios, regresar lista completa
     QString copia = nombre;
-    copia.replace(" ", "");
+    copia.replace (" ", "");
     if (copia.isEmpty())
         return profesores();
 
     // Buscar termino en lista de profesores
-    return profesores().filter(nombre);
+    return profesores().filter (nombre);
 }
 
 /**
@@ -142,7 +146,8 @@ QStringList AdministradorDb::buscar (const QString& nombre) {
  * el objeto que permite modificar/leer los datos del nuevo
  * profesor.
  */
-int AdministradorDb::registrarProfesor() {
+int AdministradorDb::registrarProfesor()
+{
     // Solo intentar registrar el profesor si estamos conectados
     // a la base de datos
     if (disponible()) {
@@ -155,13 +160,13 @@ int AdministradorDb::registrarProfesor() {
         // Agregar nuevo renglon con ID establecido
         foreach (QString tabla, TABLAS) {
             // Generar comando SQL
-            QString cmd = tr("INSERT INTO [%1] (ID) VALUES (%2);")
-                    .arg(tabla)
-                    .arg(id);
+            QString cmd = tr ("INSERT INTO [%1] (ID) VALUES (%2);")
+                          .arg (tabla)
+                          .arg (id);
 
             // Ejecutar query
             QSqlQuery query;
-            ok &= query.exec(cmd);
+            ok &= query.exec (cmd);
 
             // Terminar query o reportar error
             if (ok)
@@ -176,7 +181,7 @@ int AdministradorDb::registrarProfesor() {
 
         // Eliminar profesor si algo no funciono
         else
-            eliminarProfesor(id, true, true);
+            eliminarProfesor (id, true, true);
     }
 
     // Hubo un error al intentar registrar el nuevo profesor
@@ -191,23 +196,24 @@ int AdministradorDb::registrarProfesor() {
  * @return
  */
 QString AdministradorDb::leerDato (const int id,
-                                   const QString &tabla,
-                                   const QString &identificador) {
+                                   const QString& tabla,
+                                   const QString& identificador)
+{
     // Terminar funcion si la base de datos no esta abierta y configurada
     // o la identificacion del profesor es invalida
     if (!checarExistenciaProfesor (id))
         return "";
 
     // Generar commando
-    QString commando = tr("SELECT [%1] FROM [%2] WHERE ID=%3")
-            .arg(identificador)
-            .arg(tabla)
-            .arg(id);
+    QString commando = tr ("SELECT [%1] FROM [%2] WHERE ID=%3")
+                       .arg (identificador)
+                       .arg (tabla)
+                       .arg (id);
 
     // Ejecutar consulta
     QSqlQuery query;
-    if (query.exec(commando) && query.next()) {
-        QString str = query.value(0).toString();
+    if (query.exec (commando) && query.next()) {
+        QString str = query.value (0).toString();
         query.finish();
         return str;
     }
@@ -217,10 +223,11 @@ QString AdministradorDb::leerDato (const int id,
 }
 
 bool AdministradorDb::escribirDato (const int id,
-                                    const QString &tabla,
-                                    const QString &identificador,
-                                    const QString &valor,
-                                    const bool obligatorio) {
+                                    const QString& tabla,
+                                    const QString& identificador,
+                                    const QString& valor,
+                                    const bool obligatorio)
+{
     // Terminar funcion si la base de datos no esta abierta y configurada
     // o la identificacion del profesor es invalida
     if (!checarExistenciaProfesor (id)) {
@@ -229,7 +236,7 @@ bool AdministradorDb::escribirDato (const int id,
     }
 
     // Verificar que la tabla existe
-    if (!TABLAS.contains(tabla)) {
+    if (!TABLAS.contains (tabla)) {
         qDebug() << Q_FUNC_INFO << "tabla invalida";
         return false;
     }
@@ -247,15 +254,15 @@ bool AdministradorDb::escribirDato (const int id,
     }
 
     // Generar commando
-    QString cmdSql = tr("UPDATE [%1] SET [%2] = '%3' WHERE ID = %4;")
-            .arg(tabla)
-            .arg(identificador)
-            .arg(valor)
-            .arg(id);
+    QString cmdSql = tr ("UPDATE [%1] SET [%2] = '%3' WHERE ID = %4;")
+                     .arg (tabla)
+                     .arg (identificador)
+                     .arg (valor)
+                     .arg (id);
 
     // Ejecutar commando
     QSqlQuery query;
-    if (query.exec(cmdSql)) {
+    if (query.exec (cmdSql)) {
         query.finish();
         return true;
     }
@@ -272,21 +279,24 @@ bool AdministradorDb::escribirDato (const int id,
 /**
  * Regresa verdadero si el profesor existe en la base de datos
  */
-bool AdministradorDb::checarExistenciaProfesor(const int id) {
+bool AdministradorDb::checarExistenciaProfesor (const int id)
+{
     return disponible() && id >= 0;
 }
 
 /**
  * Regresa @c true si existe una conexión con la base de datos
  */
-bool AdministradorDb::disponible() {
+bool AdministradorDb::disponible()
+{
     return m_database.isOpen();
 }
 
 /**
  * Regresa un apuntador al objeto que administra la base de datos
  */
-QSqlDatabase& AdministradorDb::baseDeDatos() {
+QSqlDatabase& AdministradorDb::baseDeDatos()
+{
     return m_database;
 }
 
@@ -294,14 +304,16 @@ QSqlDatabase& AdministradorDb::baseDeDatos() {
  * Regresa la ubicación de la base de datos, usada para cambiar
  * el titulo de la ventana
  */
-QString AdministradorDb::ubicacionBaseDeDatos() const {
+QString AdministradorDb::ubicacionBaseDeDatos() const
+{
     return m_dbUbicacion;
 }
 
 /**
  * @brief AdministradorDb::acercaDeQt
  */
-void AdministradorDb::acercaDeQt() {
+void AdministradorDb::acercaDeQt()
+{
     QApplication::aboutQt();
 }
 
@@ -309,31 +321,32 @@ void AdministradorDb::acercaDeQt() {
  * Crea una nueva base de datos en una ubicacion definida
  * por el usuario y la abre
  */
-void AdministradorDb::nuevaBaseDeDatos() {
+void AdministradorDb::nuevaBaseDeDatos()
+{
     // Obtener ubicacion para nueva base de datos
-    QString db = QFileDialog::getSaveFileName(Q_NULLPTR,
-                                              tr("Crear base de datos vacía"),
-                                              QDir::homePath(),
-                                              tr("Bases de Datos de Access (*.mdb *.accdb)"));
+    QString db = QFileDialog::getSaveFileName (Q_NULLPTR,
+                                               tr ("Crear base de datos vacía"),
+                                               QDir::homePath(),
+                                               tr ("Bases de Datos de Access (*.mdb *.accdb)"));
 
     // Guardar template de base de datos vacía
     if (!db.isEmpty()) {
         // Escribir datos de plantilla a base de datos de salida
-        QFile out(db);
-        if (out.open(QFile::WriteOnly)) {
-            QFile plantilla(":/db/plantilla.mdb");
-            if (plantilla.open(QFile::ReadOnly)) {
-                if (out.write(plantilla.readAll()) == plantilla.size()) {
+        QFile out (db);
+        if (out.open (QFile::WriteOnly)) {
+            QFile plantilla (":/db/plantilla.mdb");
+            if (plantilla.open (QFile::ReadOnly)) {
+                if (out.write (plantilla.readAll()) == plantilla.size()) {
                     // Cerrar archivos
                     out.close();
                     plantilla.close();
 
                     // Abrir base de datos
-                    configurarBaseDeDatos(db);
+                    configurarBaseDeDatos (db);
 
                     // Mostrar mensaje de exito
-                    mostrarInfo(tr("Información"),
-                                tr("La nueva base de datos fue generada exitosamente!"));
+                    mostrarInfo (tr ("Información"),
+                                 tr ("La nueva base de datos fue generada exitosamente!"));
 
                     // Terminar ejecucion de funcion
                     return;
@@ -342,8 +355,8 @@ void AdministradorDb::nuevaBaseDeDatos() {
         }
 
         // Registrar error
-        mostrarError(tr("Error"),
-                     tr("Error al crear la nueva base de datos!"));
+        mostrarError (tr ("Error"),
+                      tr ("Error al crear la nueva base de datos!"));
     }
 }
 
@@ -352,22 +365,24 @@ void AdministradorDb::nuevaBaseDeDatos() {
  * Posteriormente, se intenta configurar una conexión a la
  * base de datos seleccionada por el usuario.
  */
-void AdministradorDb::abrirBaseDeDatos() {
+void AdministradorDb::abrirBaseDeDatos()
+{
     // Obtener archivo seleccionado por el usuario
-    QString db = QFileDialog::getOpenFileName(Q_NULLPTR,
-                                              tr("Seleccionar base de datos"),
-                                              QDir::homePath(),
-                                              tr("Bases de Datos de Access (*.mdb *.accdb)"));
+    QString db = QFileDialog::getOpenFileName (Q_NULLPTR,
+                                               tr ("Seleccionar base de datos"),
+                                               QDir::homePath(),
+                                               tr ("Bases de Datos de Access (*.mdb *.accdb)"));
 
     // Intentar abrir la base de datos
     if (!db.isEmpty())
-        configurarBaseDeDatos(db);
+        configurarBaseDeDatos (db);
 }
 
 /**
  * Termina la conexión con la base de datos actual
  */
-void AdministradorDb::cerrarBaseDeDatos() {
+void AdministradorDb::cerrarBaseDeDatos()
+{
     // Checar que la base de datos este abierta
     if (disponible()) {
         // Obtener nombre de conexion (para quitarla despues de cerrar DB)
@@ -377,7 +392,7 @@ void AdministradorDb::cerrarBaseDeDatos() {
         baseDeDatos().close();
 
         // Quitar conexion y registrar DB vacia
-        QSqlDatabase::removeDatabase(conexion);
+        QSqlDatabase::removeDatabase (conexion);
         m_database = QSqlDatabase();
         m_dbUbicacion = "";
 
@@ -386,7 +401,8 @@ void AdministradorDb::cerrarBaseDeDatos() {
     }
 }
 
-void AdministradorDb::mostrarEstadisticas() {
+void AdministradorDb::mostrarEstadisticas()
+{
 
 }
 
@@ -394,17 +410,20 @@ void AdministradorDb::mostrarEstadisticas() {
  * Cambia el estado de registro a inactivo del profesor con la ID especificada.
  * Si @a silent es @c true, no se va a mostrar un mensaje de retroalimentacion
  * al usuario.
+ * Si @a quitarRegistros es @c true, el profesor va a ser completamente eliminado
+ * de la base de datos.
  */
 void AdministradorDb::eliminarProfesor (const int id,
                                         const bool silent,
-                                        const bool quitarRegistros) {
+                                        const bool quitarRegistros)
+{
     // Registrar estatus de operacion
     bool eliminado = false;
 
     // La base de datos no esta disponible
     if (!disponible()) {
-        mostrarError(tr("Error"),
-                     tr("No hay ninguna base de datos cargada por la aplicación!"));
+        mostrarError (tr ("Error"),
+                      tr ("No hay ninguna base de datos cargada por la aplicación!"));
         return;
     }
 
@@ -413,10 +432,10 @@ void AdministradorDb::eliminarProfesor (const int id,
         // Preguntar antes de eliminar
         if (!silent) {
             QMessageBox box;
-            box.setIcon(QMessageBox::Question);
-            box.setWindowTitle(tr("Eliminar profesor"));
-            box.setText(tr("Esta seguro/a que quiere eliminar este profesor?"));
-            box.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+            box.setIcon (QMessageBox::Question);
+            box.setWindowTitle (tr ("Eliminar profesor"));
+            box.setText (tr ("Esta seguro/a que quiere eliminar este profesor?"));
+            box.setStandardButtons (QMessageBox::Yes | QMessageBox::No);
             if (box.exec() != QMessageBox::Yes)
                 return;
         }
@@ -424,9 +443,9 @@ void AdministradorDb::eliminarProfesor (const int id,
         // Eliminar profesor de la base de datos
         bool ok = true;
         foreach (QString tabla, TABLAS) {
-            QString cmd = tr("DELETE FROM [%1] WHERE ID=%2").arg(tabla).arg(id);
+            QString cmd = tr ("DELETE FROM [%1] WHERE ID=%2").arg (tabla).arg (id);
             QSqlQuery query;
-            ok &= query.exec(cmd);
+            ok &= query.exec (cmd);
 
             if (ok)
                 query.finish();
@@ -436,17 +455,18 @@ void AdministradorDb::eliminarProfesor (const int id,
         //       eliminado para evitar problemas con la UI
 
         // Actualizar lista de profesores
+        eliminado = ok;
         emit profesoresCambiados();
     }
 
     // Cambiar estado de profesor de activo a inactivo
     else
-        eliminado = escribirDato(id, "Datos Generales", "Activo", "0");
+        eliminado = escribirDato (id, "Datos Generales", "Activo", "0");
 
     // Mostrar mensaje de exito
     if (!silent && eliminado) {
-        mostrarInfo(tr("Profesor eliminado"),
-                    tr("El profesor fue eliminado de la base de datos exitosamente"));
+        mostrarInfo (tr ("Profesor eliminado"),
+                     tr ("El profesor fue eliminado de la base de datos exitosamente"));
     }
 
     // Actualizar lista de profesores
@@ -456,15 +476,17 @@ void AdministradorDb::eliminarProfesor (const int id,
 /**
  * Genera un message box para fines informativos
  */
-void AdministradorDb::mostrarInfo (const QString &titulo, const QString &texto) {
-    QMessageBox::information(Q_NULLPTR, titulo, texto);
+void AdministradorDb::mostrarInfo (const QString& titulo, const QString& texto)
+{
+    QMessageBox::information (Q_NULLPTR, titulo, texto);
 }
 
 /**
  * Genera un message box para fines de reporte de errores
  */
-void AdministradorDb::mostrarError (const QString &titulo, const QString &texto) {
-    QMessageBox::warning(Q_NULLPTR, titulo, texto);
+void AdministradorDb::mostrarError (const QString& titulo, const QString& texto)
+{
+    QMessageBox::warning (Q_NULLPTR, titulo, texto);
 }
 
 /**
@@ -472,19 +494,20 @@ void AdministradorDb::mostrarError (const QString &titulo, const QString &texto)
  * definida. Si hay un error, entonces se va a mostrar una notificacion al
  * usuario.
  */
-void AdministradorDb::configurarBaseDeDatos(const QString& ubicacion) {
+void AdministradorDb::configurarBaseDeDatos (const QString& ubicacion)
+{
     // Checar que la ubicacion no este vacía
     if (ubicacion.isEmpty()) {
-        mostrarError (tr("Error"),
-                      tr("La ubicación de la base de datos no puede estar vacía!"));
+        mostrarError (tr ("Error"),
+                      tr ("La ubicación de la base de datos no puede estar vacía!"));
         return;
     }
 
     // Checar que la base de datos existe
-    QFileInfo info(ubicacion);
+    QFileInfo info (ubicacion);
     if (!info.exists() || !info.isFile()) {
-        mostrarError(tr("Error"),
-                     tr("El archivo \"%1\" no existe!"));
+        mostrarError (tr ("Error"),
+                      tr ("El archivo \"%1\" no existe!"));
         return;
     }
 
@@ -495,29 +518,29 @@ void AdministradorDb::configurarBaseDeDatos(const QString& ubicacion) {
     QString dbq = ubicacion;
 
     // Abrir la nueva base de datos
-    m_database = QSqlDatabase::addDatabase("QODBC");
+    m_database = QSqlDatabase::addDatabase ("QODBC");
 
     // Implementaciones para cada SO
 #if defined (Q_OS_WIN)
-    dbq.replace(QChar('/'), "\\");
-    m_database.setDatabaseName("Driver={Microsoft Access Driver (*.mdb, *.accdb)};"
-                               "DSN='';DBQ=" + dbq + ";");
+    dbq.replace (QChar ('/'), "\\");
+    m_database.setDatabaseName ("Driver={Microsoft Access Driver (*.mdb, *.accdb)};"
+                                "DSN='';DBQ=" + dbq + ";");
 #elif defined (Q_OS_LINUX)
-    m_database.setDatabaseName("Driver=MDBTools;DBQ='" + dbq + "';");
+    m_database.setDatabaseName ("Driver=MDBTools;DBQ='" + dbq + "';");
 #else
-    mostrarError(tr("Error"),
-                 tr("Este sistema operativo no está soportado por la "
-                    "aplicación!"));
+    mostrarError (tr ("Error"),
+                  tr ("Este sistema operativo no está soportado por la "
+                      "aplicación!"));
 #endif
 
     // Notificar al usuario si hubo un error
     if (!m_database.open()) {
         QMessageBox message;
-        message.setWindowTitle(tr("Error"));
-        message.setIcon(QMessageBox::Critical);
-        message.setText("<h3>" + tr("Error abriendo la base de datos") + ":</h3>");
-        message.setInformativeText(m_database.lastError().text());
-        message.setStandardButtons(QMessageBox::Ok);
+        message.setWindowTitle (tr ("Error"));
+        message.setIcon (QMessageBox::Critical);
+        message.setText ("<h3>" + tr ("Error abriendo la base de datos") + ":</h3>");
+        message.setInformativeText (m_database.lastError().text());
+        message.setStandardButtons (QMessageBox::Ok);
         message.exec();
         cerrarBaseDeDatos();
     }
@@ -541,8 +564,9 @@ void AdministradorDb::configurarBaseDeDatos(const QString& ubicacion) {
  *
  * @return
  */
-QList<QList<QVariant>> AdministradorDb::ejecutarConsulta(const QStringList campos,
-                                                         const QString tabla) {
+QList<QList<QVariant>> AdministradorDb::ejecutarConsulta (const QStringList campos,
+                    const QString tabla)
+{
     // Inicializar lista
     QList<QList<QVariant>> resultados;
 
@@ -551,7 +575,7 @@ QList<QList<QVariant>> AdministradorDb::ejecutarConsulta(const QStringList campo
         return resultados;
 
     // Verificar que la tabla existe
-    if (!TABLAS.contains(tabla))
+    if (!TABLAS.contains (tabla))
         return resultados;
 
     // Hacer un query individual para cada campo y registrar los resultados
@@ -566,14 +590,14 @@ QList<QList<QVariant>> AdministradorDb::ejecutarConsulta(const QStringList campo
 
         // Generar seccion de tabla
         commando.append ("] FROM [");
-        commando.append(tabla);
-        commando.append("]");
+        commando.append (tabla);
+        commando.append ("]");
 
         // Ejecutar query
         QSqlQuery query;
-        query.exec(commando);
+        query.exec (commando);
         while (query.next())
-            resultadosCampo.append(query.value(0));
+            resultadosCampo.append (query.value (0));
 
         // Agregar resultados de query
         resultados.append (resultadosCampo);

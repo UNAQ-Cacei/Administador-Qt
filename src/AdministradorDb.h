@@ -76,7 +76,10 @@ public slots:
     void abrirBaseDeDatos();
     void cerrarBaseDeDatos();
     void mostrarEstadisticas();
-    void actualizarListaProfes() { emit profesoresCambiados(); }
+    void actualizarListaProfes()
+    {
+        emit profesoresCambiados();
+    }
     void eliminarProfesor (const int id,
                            const bool silent,
                            const bool quitarRegistros = false);
