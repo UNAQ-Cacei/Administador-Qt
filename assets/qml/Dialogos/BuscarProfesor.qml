@@ -79,12 +79,9 @@ Window {
         TextField {
             id: nombre
             Layout.fillWidth: true
-            Layout.minimumWidth: 250
+            Layout.minimumWidth: 392
             placeholderText: qsTr("Escribir un nombre") + "..."
-
-            onTextChanged: {
-                resultados.model = CAdministradorDb.profesores
-            }
+            onTextChanged: resultados.model = CAdministradorDb.buscar(text)
         }
 
         Label {
@@ -97,49 +94,6 @@ Window {
             model: []
             enabled: count > 0
             Layout.fillWidth: true
-        }
-
-        Item {
-            height: app.spacing
-        }
-
-        GroupBox {
-            title: qsTr("Opciones de Busqueda")
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-
-            GridLayout {
-                columns: 2
-                anchors.fill: parent
-                rowSpacing: app.spacing
-                columnSpacing: app.spacing
-                anchors.margins: app.spacing
-
-                CheckBox {
-                    text: qsTr("Limitar por género")
-                }
-
-                ComboBox {
-                    Layout.fillWidth: true
-                    model: [
-                        qsTr("Femenino"),
-                        qsTr("Masculino")
-                    ]
-                }
-
-                CheckBox {
-                    text: qsTr("Limitar por área")
-                }
-
-                ComboBox {
-                    Layout.fillWidth: true
-                    model: [
-                        qsTr("Ingeniería"),
-                        qsTr("TSU"),
-                        qsTr("Posgrado")
-                    ]
-                }
-            }
         }
 
         Item {
@@ -160,8 +114,14 @@ Window {
             }
 
             Button {
-                text: qsTr("Siguiente")
+                text: qsTr("OK")
                 enabled: resultados.count > 0
+                onClicked: {
+                    var resultado = resultados.currentText
+                    var indice = CAdministradorDb.profesores.indexOf(resultado) + 1
+                    profesorSeleccionado(indice)
+                    window.close()
+                }
             }
         }
     }

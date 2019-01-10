@@ -26,13 +26,14 @@ import QtQuick.Layouts 1.0
 import QtQuick.Controls 1.0
 
 TabView {
-    id: detallesProfesor
+    id: dP
     Layout.minimumWidth: 780
     Layout.minimumHeight: 580
 
     //
     // Variables
     //
+    property string curp: ""
     property string nombres: ""
     property string apPaterno: ""
     property string apMaterno: ""
@@ -40,39 +41,86 @@ TabView {
     property int genero: 0
     property string lugarNacimiento: ""
     property int estadoCivil: 0
-    property string numHijos: ""
-    property string numEmpleado: ""
+    property int numHijos: 0
+    property int numEmpleado: 0
     property bool activo: false
     property string catContratacion: ""
     property bool contratacionPorPlaza: false
-    property string antiguedadInst: ""
+    property int antiguedadInst: 0
     property string adscripcion: ""
     property string programasImpartidos: ""
     property string licTitulo: ""
     property string licInstitucion: ""
     property string licPais: ""
     property string licCedula: ""
-    property string licAnoObtencion: ""
+    property int licAnoObtencion: 0
     property string licEstatusFinal: ""
     property string maestTitulo: ""
     property string maestInstitucion: ""
     property string maestPais: ""
     property string maestCedula: ""
-    property string maestAnoObtencion: ""
+    property int maestAnoObtencion: 0
     property string maestEstatusFinal: ""
     property string maestLineaTerminal: ""
     property string docTitulo: ""
     property string docInstitucion: ""
     property string docPais: ""
     property string docCedula: ""
-    property string docAnoObtencion: ""
+    property int docAnoObtencion: 0
     property string docEstatusFinal: ""
     property string espArea: ""
     property string espInstitucion: ""
     property string espPais: ""
     property string espCedula: ""
-    property string espAnoObtencion: ""
+    property int espAnoObtencion: 0
     property string espEstatusFinal: ""
+
+    //
+    // Cambia todos los valores a su estado inicial
+    //
+    function resetVariables() {
+        curp = ""
+        nombres = ""
+        apPaterno = ""
+        apMaterno = ""
+        fechaNacimiento = ""
+        genero = 0
+        lugarNacimiento = ""
+        estadoCivil = 0
+        numHijos = 0
+        numEmpleado = 0
+        activo = false
+        catContratacion = ""
+        contratacionPorPlaza = false
+        antiguedadInst = 0
+        adscripcion = ""
+        programasImpartidos = ""
+        licTitulo = ""
+        licInstitucion = ""
+        licPais = ""
+        licCedula = ""
+        licAnoObtencion = 0
+        licEstatusFinal = ""
+        maestTitulo = ""
+        maestInstitucion = ""
+        maestPais = ""
+        maestCedula = ""
+        maestAnoObtencion = 0
+        maestEstatusFinal = ""
+        maestLineaTerminal = ""
+        docTitulo = ""
+        docInstitucion = ""
+        docPais = ""
+        docCedula = ""
+        docAnoObtencion = 0
+        docEstatusFinal = ""
+        espArea = ""
+        espInstitucion = ""
+        espPais = ""
+        espCedula = ""
+        espAnoObtencion = 0
+        espEstatusFinal = ""
+    }
 
     //--------------------------------------------------------------------//
     // FUNCIONES DE LECTURA Y ESCRITURA DE INFORMACION A LA BASE DE DATOS //
@@ -83,67 +131,59 @@ TabView {
     // en los controles de la interfaz grafica
     //
     function leerDatos(id) {
-        //
-        // Definir funcion de lectura
-        //
-        function leerDato(id, tabla, campo, target) {
-            if (CAdministradorDb.disponible)
-                target = CAdministradorDb.leerDato(id, tabla, campo)
-        }
-
-        // El profesor existe
+        // El profesor existe, leer datos
         if (CAdministradorDb.checarExistenciaProfesor(id)) {
             // Leer datos personales
-            leerDato(id, "Datos Personales", "Nombres", nombres)
-            leerDato(id, "Datos Personales", "Apellido Paterno", apPaterno)
-            leerDato(id, "Datos Personales", "Apellido Materno", apMaterno)
-            leerDato(id, "Datos Personales", "Fecha de Nacimiento", fechaNacimiento)
-            leerDato(id, "Datos Personales", "Genero", genero)
-            leerDato(id, "Datos Personales", "Lugar de Nacimiento", lugarNacimiento)
-            leerDato(id, "Datos Personales", "Estado Civil", estadoCivil.currentIndex)
-            leerDato(id, "Datos Personales", "Num Hijos", numHijos)
+            dP.curp = CAdministradorDb.leerDato(id, "Datos Personales", "CURP")
+            dP.nombres = CAdministradorDb.leerDato(id, "Datos Personales", "Nombres")
+            dP.apPaterno = CAdministradorDb.leerDato(id, "Datos Personales", "Apellido Paterno")
+            dP.apMaterno = CAdministradorDb.leerDato(id, "Datos Personales", "Apellido Materno")
+            dP.fechaNacimiento = CAdministradorDb.leerDato(id, "Datos Personales", "Fecha de Nacimiento")
+            dP.genero = CAdministradorDb.leerDato(id, "Datos Personales", "Genero")
+            dP.lugarNacimiento = CAdministradorDb.leerDato(id, "Datos Personales", "Lugar de Nacimiento")
+            dP.estadoCivil = CAdministradorDb.leerDato(id, "Datos Personales", "Estado Civil")
+            dP.numHijos = CAdministradorDb.leerDato(id, "Datos Personales", "Num Hijos")
 
             // Leer datos generales
-            leerDato(id, "Datos Generales", "Num Empleado", numEmpleado)
-            leerDato(id, "Datos Generales", "Inactivo", !activo)
-            leerDato(id, "Datos Generales", "Categoria de Contratacion", catContratacion)
-            leerDato(id, "Datos Generales", "Plaza", contratacionPorPlaza)
-            leerDato(id, "Datos Generales", "Antiguedad", antiguedadInst)
-            leerDato(id, "Datos Generales", "Adscripcion", adscripcion)
-            leerDato(id, "Datos Generales", "Programa Impartido", programasImpartidos)
+            dP.numEmpleado = CAdministradorDb.leerDato(id, "Datos Generales", "Num Empleado")
+            dP.activo = CAdministradorDb.leerDato(id, "Datos Generales", "Activo") === "1"
+            dP.catContratacion = CAdministradorDb.leerDato(id, "Datos Generales", "Categoria de Contratacion")
+            dP.contratacionPorPlaza = CAdministradorDb.leerDato(id, "Datos Generales", "Plaza") === "1"
+            dP.antiguedadInst = CAdministradorDb.leerDato(id, "Datos Generales", "Antiguedad")
+            dP.adscripcion = CAdministradorDb.leerDato(id, "Datos Generales", "Adscripcion")
+            dP.programasImpartidos = CAdministradorDb.leerDato(id, "Datos Generales", "Programa Impartido")
 
             // Leer datos de licenciatura
-            leerDato(id, "Licenciatura", "Titulo", licTitulo)
-            leerDato(id, "Licenciatura", "Institucion", licInstitucion)
-            leerDato(id, "Licenciatura", "Pais", licPais)
-            leerDato(id, "Licenciatura", "Cedula", licCedula)
-            leerDato(id, "Licenciatura", "Año de Obtencion", licAnoObtencion)
-            leerDato(id, "Licenciatura", "Estatus Final", licEstatusFinal)
+            dP.licTitulo = CAdministradorDb.leerDato(id, "Licenciatura", "Titulo")
+            dP.licInstitucion = CAdministradorDb.leerDato(id, "Licenciatura", "Institucion")
+            dP.licPais = CAdministradorDb.leerDato(id, "Licenciatura", "Pais")
+            dP.licCedula = CAdministradorDb.leerDato(id, "Licenciatura", "Cedula")
+            dP.licAnoObtencion = CAdministradorDb.leerDato(id, "Licenciatura", "Año de Obtencion")
+            dP.licEstatusFinal = CAdministradorDb.leerDato(id, "Licenciatura", "Estatus Final")
 
             // Leer datos de maestria
-            leerDato(id, "Maestria", "Titulo", maestTitulo)
-            leerDato(id, "Maestria", "Institucion", maestInstitucion)
-            leerDato(id, "Maestria", "Pais", maestPais)
-            leerDato(id, "Maestria", "Cedula", maestCedula)
-            leerDato(id, "Maestria", "Año de Obtencion", maestAnoObtencion)
-            leerDato(id, "Maestria", "Estatus Final", maestEstatusFinal)
-            leerDato(id, "Maestria", "Linea Terminal", maestLineaTerminal)
+            dP.maestTitulo = CAdministradorDb.leerDato(id, "Maestria", "Titulo")
+            dP.maestInstitucion = CAdministradorDb.leerDato(id, "Maestria", "Institucion")
+            dP.maestPais = CAdministradorDb.leerDato(id, "Maestria", "Pais")
+            dP.maestCedula = CAdministradorDb.leerDato(id, "Maestria", "Cedula")
+            dP.maestAnoObtencion = CAdministradorDb.leerDato(id, "Maestria", "Año de Obtencion")
+            dP.maestEstatusFinal = CAdministradorDb.leerDato(id, "Maestria", "Estatus Final")
 
             // Leer datos de doctorado
-            leerDato(id, "Doctorado", "Titulo", docTitulo)
-            leerDato(id, "Doctorado", "Institucion", docInstitucion)
-            leerDato(id, "Doctorado", "Pais", docPais)
-            leerDato(id, "Doctorado", "Cedula", docCedula)
-            leerDato(id, "Doctorado", "Año de Obtencion", docAnoObtencion)
-            leerDato(id, "Doctorado", "Estatus Final", docEstatusFinal)
+            dP.docTitulo = CAdministradorDb.leerDato(id, "Doctorado", "Titulo")
+            dP.docInstitucion = CAdministradorDb.leerDato(id, "Doctorado", "Institucion")
+            dP.docPais = CAdministradorDb.leerDato(id, "Doctorado", "Pais")
+            dP.docCedula = CAdministradorDb.leerDato(id, "Doctorado", "Cedula")
+            dP.docAnoObtencion = CAdministradorDb.leerDato(id, "Doctorado", "Año de Obtencion")
+            dP.docEstatusFinal = CAdministradorDb.leerDato(id, "Doctorado", "Estatus Final")
 
             // Leer datos de especialidad
-            leerDato(id, "Especialidad", "Area", espArea)
-            leerDato(id, "Especialidad", "Institucion", espInstitucion)
-            leerDato(id, "Especialidad", "Pais", espPais)
-            leerDato(id, "Especialidad", "Cedula", espCedula)
-            leerDato(id, "Especialidad", "Año de Obtencion", espAnoObtencion)
-            leerDato(id, "Especialidad", "Estatus Final", espEstatusFinal)
+            dP.espArea = CAdministradorDb.leerDato(id, "Especialidad", "Area")
+            dP.espInstitucion = CAdministradorDb.leerDato(id, "Especialidad", "Institucion")
+            dP.espPais = CAdministradorDb.leerDato(id, "Especialidad", "Pais")
+            dP.espCedula = CAdministradorDb.leerDato(id, "Especialidad", "Cedula")
+            dP.espAnoObtencion = CAdministradorDb.leerDato(id, "Especialidad", "Año de Obtencion")
+            dP.espEstatusFinal = CAdministradorDb.leerDato(id, "Especialidad", "Estatus Final")
         }
 
         // Profesor no existe, mostrar error
@@ -151,6 +191,19 @@ TabView {
             CAdministradorDb.mostrarError(qsTr("Error"),
                                           qsTr("El profesor con ID %1 no existe!").arg(id))
         }
+    }
+
+    //
+    // Regresa verdadero si los datos minimos tienen informacion
+    //
+    function datosMinimos() {
+        if (nombres.length === 0 ||
+                apMaterno.length === 0 ||
+                apPaterno.length === 0 ||
+                fechaNacimiento.length === 0)
+            return false
+
+        return true
     }
 
     //
@@ -164,7 +217,7 @@ TabView {
                                           qsTr("La base de datos no está disponible, por " +
                                                "lo cuál no se pueden guardar los datos del " +
                                                "profesor con el ID %1").arg(id))
-            return
+            return false
         }
 
         //
@@ -177,11 +230,15 @@ TabView {
         //
         // Funcion para escribir datos a la Db y reportar errores individuales
         //
-        function escribirDato(id, tabla, campo, valor) {
+        function escribirDato(id, tabla, campo, valor, obligatorio) {
             // Solo escribir el dato si ok es verdadero
             if (ok) {
+                // Cambiar valor de obligatorio a falso si no es definido
+                if (obligatorio === 'undefined')
+                    obligatorio = false
+
                 // Escribir dato
-                ok = CAdministradorDb.escribirDato(id, tabla, campo, valor)
+                ok = CAdministradorDb.escribirDato(id, tabla, campo, valor, obligatorio)
 
                 // Error de escritura, alertar usuario
                 if (!ok) {
@@ -194,61 +251,63 @@ TabView {
         }
 
         // Escribir datos personales
-        escribirDato(id, "Datos Personales", "Nombres", nombres)
-        escribirDato(id, "Datos Personales", "Apellido Paterno", apPaterno)
-        escribirDato(id, "Datos Personales", "Apellido Materno", apMaterno)
-        escribirDato(id, "Datos Personales", "Fecha de Nacimiento", fechaNacimiento)
-        escribirDato(id, "Datos Personales", "Genero", genero)
-        escribirDato(id, "Datos Personales", "Lugar de Nacimiento", lugarNacimiento)
-        escribirDato(id, "Datos Personales", "Estado Civil", estadoCivil)
-        escribirDato(id, "Datos Personales", "Num Hijos", numHijos)
+        escribirDato(id, "Datos Personales", "CURP", dP.curp)
+        escribirDato(id, "Datos Personales", "Nombres", dP.nombres, true)
+        escribirDato(id, "Datos Personales", "Apellido Paterno", dP.apPaterno, true)
+        escribirDato(id, "Datos Personales", "Apellido Materno", dP.apMaterno, true)
+        escribirDato(id, "Datos Personales", "Fecha de Nacimiento", dP.fechaNacimiento, true)
+        escribirDato(id, "Datos Personales", "Genero", dP.genero)
+        escribirDato(id, "Datos Personales", "Lugar de Nacimiento", dP.lugarNacimiento)
+        escribirDato(id, "Datos Personales", "Estado Civil", dP.estadoCivil)
+        escribirDato(id, "Datos Personales", "Num Hijos", dP.numHijos)
 
         // Escribir datos generales
-        escribirDato(id, "Datos Generales", "Num Empleado", numEmpleado)
-        escribirDato(id, "Datos Generales", "Inactivo", !activo)
-        escribirDato(id, "Datos Generales", "Categoria de Contratacion", catContratacion)
-        escribirDato(id, "Datos Generales", "Plaza", contratacionPorPlaza)
-        escribirDato(id, "Datos Generales", "Antiguedad", antiguedadInst)
-        escribirDato(id, "Datos Generales", "Adscripcion", adscripcion)
-        escribirDato(id, "Datos Generales", "Programa Impartido", programasImpartidos)
+        escribirDato(id, "Datos Generales", "Num Empleado", dP.numEmpleado)
+        escribirDato(id, "Datos Generales", "Activo", dP.activo ? 1 : 0)
+        escribirDato(id, "Datos Generales", "Categoria de Contratacion", dP.catContratacion)
+        escribirDato(id, "Datos Generales", "Plaza", dP.contratacionPorPlaza ? 1 : 0)
+        escribirDato(id, "Datos Generales", "Antiguedad", dP.antiguedadInst)
+        escribirDato(id, "Datos Generales", "Adscripcion", dP.adscripcion)
+        escribirDato(id, "Datos Generales", "Programa Impartido", dP.programasImpartidos)
 
         // Escribir datos de licenciatura
-        escribirDato(id, "Licenciatura", "Titulo", licTitulo)
-        escribirDato(id, "Licenciatura", "Institucion", licInstitucion)
-        escribirDato(id, "Licenciatura", "Pais", licPais)
-        escribirDato(id, "Licenciatura", "Cedula", licCedula)
-        escribirDato(id, "Licenciatura", "Año de Obtencion", licAnoObtencion)
-        escribirDato(id, "Licenciatura", "Estatus Final", licEstatusFinal)
+        escribirDato(id, "Licenciatura", "Titulo", dP.licTitulo)
+        escribirDato(id, "Licenciatura", "Institucion", dP.licInstitucion)
+        escribirDato(id, "Licenciatura", "Pais", dP.licPais)
+        escribirDato(id, "Licenciatura", "Cedula", dP.licCedula)
+        escribirDato(id, "Licenciatura", "Año de Obtencion", dP.licAnoObtencion)
+        escribirDato(id, "Licenciatura", "Estatus Final", dP.licEstatusFinal)
 
         // Escribir datos de maestria
-        escribirDato(id, "Maestria", "Titulo", maestTitulo)
-        escribirDato(id, "Maestria", "Institucion", maestInstitucion)
-        escribirDato(id, "Maestria", "Pais", maestPais)
-        escribirDato(id, "Maestria", "Cedula", maestCedula)
-        escribirDato(id, "Maestria", "Año de Obtencion", maestAnoObtencion)
-        escribirDato(id, "Maestria", "Estatus Final", maestEstatusFinal)
-        escribirDato(id, "Maestria", "Linea Terminal", maestLineaTerminal)
+        escribirDato(id, "Maestria", "Titulo", dP.maestTitulo)
+        escribirDato(id, "Maestria", "Institucion", dP.maestInstitucion)
+        escribirDato(id, "Maestria", "Pais", dP.maestPais)
+        escribirDato(id, "Maestria", "Cedula", dP.maestCedula)
+        escribirDato(id, "Maestria", "Año de Obtencion", dP.maestAnoObtencion)
+        escribirDato(id, "Maestria", "Estatus Final", dP.maestEstatusFinal)
+        escribirDato(id, "Maestria", "Linea Terminal", dP.maestLineaTerminal)
 
         // Escribir datos de doctorado
-        escribirDato(id, "Doctorado", "Titulo", docTitulo)
-        escribirDato(id, "Doctorado", "Institucion", docInstitucion)
-        escribirDato(id, "Doctorado", "Pais", docPais)
-        escribirDato(id, "Doctorado", "Cedula", docCedula)
-        escribirDato(id, "Doctorado", "Año de Obtencion", docAnoObtencion)
-        escribirDato(id, "Doctorado", "Estatus Final", docEstatusFinal)
+        escribirDato(id, "Doctorado", "Titulo", dP.docTitulo)
+        escribirDato(id, "Doctorado", "Institucion", dP.docInstitucion)
+        escribirDato(id, "Doctorado", "Pais", dP.docPais)
+        escribirDato(id, "Doctorado", "Cedula", dP.docCedula)
+        escribirDato(id, "Doctorado", "Año de Obtencion", dP.docAnoObtencion)
+        escribirDato(id, "Doctorado", "Estatus Final", dP.docEstatusFinal)
 
         // Escribir datos de especialidad
-        escribirDato(id, "Especialidad", "Area", espArea)
-        escribirDato(id, "Especialidad", "Institucion", espInstitucion)
-        escribirDato(id, "Especialidad", "Pais", espPais)
-        escribirDato(id, "Especialidad", "Cedula", espCedula)
-        escribirDato(id, "Especialidad", "Año de Obtencion", espAnoObtencion)
-        escribirDato(id, "Especialidad", "Estatus Final", espEstatusFinal)
+        escribirDato(id, "Especialidad", "Area", dP.espArea)
+        escribirDato(id, "Especialidad", "Institucion", dP.espInstitucion)
+        escribirDato(id, "Especialidad", "Pais", dP.espPais)
+        escribirDato(id, "Especialidad", "Cedula", dP.espCedula)
+        escribirDato(id, "Especialidad", "Año de Obtencion", dP.espAnoObtencion)
+        escribirDato(id, "Especialidad", "Estatus Final", dP.espEstatusFinal)
 
         // Mostrar dialogo de exito
         if (ok) {
             CAdministradorDb.mostrarInfo(qsTr("Información"),
                                          qsTr("Los datos del profesor fueron actualizados exitosamente"))
+            CAdministradorDb.actualizarListaProfes()
         }
 
         // Hubo un error al intentar guardar los datos
@@ -257,6 +316,9 @@ TabView {
                                           qsTr("Hubo un error al intentar guardar los datos " +
                                                "del profesor con el ID %1").arg(id))
         }
+
+        // Regresar estatus de operacion
+        return ok
     }
 
     //------------------------------------------------------------------//
@@ -267,7 +329,6 @@ TabView {
     // Pestaña de datos personales
     //
     Tab {
-        active: true
         title: qsTr("Datos Personales")
 
         GridLayout {
@@ -290,13 +351,14 @@ TabView {
             } CheckBox {
                 checked: activo
                 Layout.fillWidth: true
+                onCheckedChanged: activo = checked
             }
 
             //
             // Nombres
             //
             Label {
-                text: qsTr ("Nombres") + ":"
+                text: qsTr ("Nombres") + "*:"
                 horizontalAlignment: Label.AlignRight
             } TextField {
                 text: nombres
@@ -308,7 +370,7 @@ TabView {
             // Apellido paterno
             //
             Label {
-                text: qsTr ("Apellido Paterno") + ":"
+                text: qsTr ("Apellido Paterno") + "*:"
                 horizontalAlignment: Label.AlignRight
             } TextField {
                 text: apPaterno
@@ -320,7 +382,7 @@ TabView {
             // Apellido materno
             //
             Label {
-                text: qsTr ("Apellido Materno") + ":"
+                text: qsTr ("Apellido Materno") + "*:"
                 horizontalAlignment: Label.AlignRight
             } TextField {
                 text: apMaterno
@@ -332,7 +394,7 @@ TabView {
             // Fecha de nacimiento
             //
             Label {
-                text: qsTr ("Fecha de Nacimiento") + ":"
+                text: qsTr ("Fecha de Nacimiento") + "*:"
                 horizontalAlignment: Label.AlignRight
             } TextField {
                 text: fechaNacimiento
@@ -350,6 +412,18 @@ TabView {
                 text: lugarNacimiento
                 Layout.fillWidth: true
                 onTextChanged: lugarNacimiento = text
+            }
+
+            //
+            // CURP
+            //
+            Label {
+                text: qsTr ("CURP") + ":"
+                horizontalAlignment: Label.AlignRight
+            } TextField {
+                text: curp
+                Layout.fillWidth: true
+                onTextChanged: curp = text
             }
 
             //
@@ -419,6 +493,7 @@ TabView {
             columns: 2
             rowSpacing: app.spacing
             columnSpacing: app.spacing
+            Layout.margins: 2 * app.spacing
 
             anchors {
                 fill: parent
@@ -434,6 +509,7 @@ TabView {
             } TextField {
                 text: numEmpleado
                 Layout.fillWidth: true
+                onTextChanged: numEmpleado = text
             }
 
             //
@@ -445,6 +521,7 @@ TabView {
             } TextField {
                 text: catContratacion
                 Layout.fillWidth: true
+                onTextChanged: catContratacion = text
             }
 
             //
@@ -456,6 +533,7 @@ TabView {
             } CheckBox {
                 checked: contratacionPorPlaza
                 Layout.fillWidth: true
+                onCheckedChanged: contratacionPorPlaza = checked
             }
 
             //
@@ -467,6 +545,7 @@ TabView {
             } TextField {
                 text: antiguedadInst
                 Layout.fillWidth: true
+                onTextChanged: antiguedadInst = text
             }
 
             //
@@ -478,10 +557,11 @@ TabView {
             } TextField {
                 text: adscripcion
                 Layout.fillWidth: true
+                onTextChanged: adscripcion = text
             }
 
             //
-            // Programas impartudos
+            // Programas impartidos
             //
             Label {
                 text: qsTr("Programa(s) Impartido(s)") + ":"
@@ -489,13 +569,15 @@ TabView {
             } TextField {
                 text: programasImpartidos
                 Layout.fillWidth: true
+                onTextChanged: programasImpartidos = text
             }
-        }
 
-        //
-        // Espaciador
-        //
-        Item { Layout.fillHeight: true }
+            //
+            // Espaciador
+            //
+            Item { Layout.fillHeight: true }
+            Item { Layout.fillHeight: true }
+        }
     }
 
     //
@@ -528,61 +610,55 @@ TabView {
                     Label {
                         text: qsTr("Titulo Profesional") + ":"
                         horizontalAlignment: Label.AlignRight
-                    }
-
-                    TextField {
+                    } TextField {
                         text: licTitulo
                         Layout.fillWidth: true
+                        onTextChanged: licTitulo = text
                     }
 
                     Label {
                         text: qsTr("Institución") + ":"
                         horizontalAlignment: Label.AlignRight
-                    }
-
-                    TextField {
+                    } TextField {
                         text: licInstitucion
                         Layout.fillWidth: true
+                        onTextChanged: licInstitucion = text
                     }
 
                     Label {
                         text: qsTr("País de Egreso") + ":"
                         horizontalAlignment: Label.AlignRight
-                    }
-
-                    TextField {
+                    } TextField {
                         text: licPais
                         Layout.fillWidth: true
+                        onTextChanged: licPais = text
                     }
 
                     Label {
                         text: qsTr("Cédula Profesional") + ":"
                         horizontalAlignment: Label.AlignRight
-                    }
-
-                    TextField {
+                    } TextField {
                         text: licCedula
                         Layout.fillWidth: true
+                        onTextChanged: licCedula = text
                     }
 
                     Label {
                         text: qsTr("Año de Obtención") + ":"
                         horizontalAlignment: Label.AlignRight
-                    }
-
-                    TextField {
+                    } TextField {
                         text: licAnoObtencion
                         Layout.fillWidth: true
+                        onTextChanged: licAnoObtencion = text
                     }
 
                     Label {
                         text: qsTr("Estatus Final") + ":"
                         horizontalAlignment: Label.AlignRight
-                    }
-
-                    TextField {
+                    } TextField {
                         text: licEstatusFinal
                         Layout.fillWidth: true
+                        onTextChanged: licEstatusFinal = text
                     }
                 }
             }
@@ -592,7 +668,6 @@ TabView {
             //
             GroupBox {
                 Layout.fillWidth: true
-
                 title: qsTr("Maestría")
                 Layout.margins: app.spacing
 
@@ -606,71 +681,55 @@ TabView {
                     Label {
                         text: qsTr("Titulo Profesional") + ":"
                         horizontalAlignment: Label.AlignRight
-                    }
-
-                    TextField {
+                    } TextField {
                         text: maestTitulo
                         Layout.fillWidth: true
+                        onTextChanged: maestTitulo = text
                     }
 
                     Label {
                         text: qsTr("Institución") + ":"
                         horizontalAlignment: Label.AlignRight
-                    }
-
-                    TextField {
+                    } TextField {
                         text: maestInstitucion
                         Layout.fillWidth: true
+                        onTextChanged: maestInstitucion = text
                     }
 
                     Label {
                         text: qsTr("País de Egreso") + ":"
                         horizontalAlignment: Label.AlignRight
-                    }
-
-                    TextField {
+                    } TextField {
                         text: maestPais
                         Layout.fillWidth: true
+                        onTextChanged: maestPais = text
                     }
 
                     Label {
                         text: qsTr("Cédula Profesional") + ":"
                         horizontalAlignment: Label.AlignRight
-                    }
-
-                    TextField {
+                    } TextField {
                         text: maestCedula
                         Layout.fillWidth: true
+                        onTextChanged: maestCedula = text
                     }
 
                     Label {
                         text: qsTr("Año de Obtención") + ":"
                         horizontalAlignment: Label.AlignRight
-                    }
-
-                    TextField {
+                    } TextField {
                         text: maestAnoObtencion
                         Layout.fillWidth: true
-                    }
-
-                    Label {
-                        text: qsTr("Línea Terminal") + ":"
-                        horizontalAlignment: Label.AlignRight
-                    }
-
-                    TextField {
-                        text: maestLineaTerminal
-                        Layout.fillWidth: true
+                        onTextChanged: maestAnoObtencion = text
                     }
 
                     Label {
                         text: qsTr("Estatus Final") + ":"
                         horizontalAlignment: Label.AlignRight
-                    }
-
-                    TextField {
+                    } TextField {
                         text: maestEstatusFinal
                         Layout.fillWidth: true
+                        onTextChanged: maestEstatusFinal = text
                     }
                 }
             }
@@ -680,7 +739,6 @@ TabView {
             //
             GroupBox {
                 Layout.fillWidth: true
-
                 title: qsTr("Doctorado")
                 Layout.margins: app.spacing
 
@@ -694,61 +752,55 @@ TabView {
                     Label {
                         text: qsTr("Titulo Profesional") + ":"
                         horizontalAlignment: Label.AlignRight
-                    }
-
-                    TextField {
+                    } TextField {
                         text: docTitulo
                         Layout.fillWidth: true
+                        onTextChanged: docTitulo = text
                     }
 
                     Label {
                         text: qsTr("Institución") + ":"
                         horizontalAlignment: Label.AlignRight
-                    }
-
-                    TextField {
+                    } TextField {
                         text: docInstitucion
                         Layout.fillWidth: true
+                        onTextChanged: docInstitucion = text
                     }
 
                     Label {
                         text: qsTr("País de Egreso") + ":"
                         horizontalAlignment: Label.AlignRight
-                    }
-
-                    TextField {
+                    } TextField {
                         text: docPais
                         Layout.fillWidth: true
+                        onTextChanged: docPais = text
                     }
 
                     Label {
                         text: qsTr("Cédula Profesional") + ":"
                         horizontalAlignment: Label.AlignRight
-                    }
-
-                    TextField {
+                    } TextField {
                         text: docCedula
                         Layout.fillWidth: true
+                        onTextChanged: docCedula = text
                     }
 
                     Label {
                         text: qsTr("Año de Obtención") + ":"
                         horizontalAlignment: Label.AlignRight
-                    }
-
-                    TextField {
+                    } TextField {
                         text: docAnoObtencion
                         Layout.fillWidth: true
+                        onTextChanged: docAnoObtencion = text
                     }
 
                     Label {
                         text: qsTr("Estatus Final") + ":"
                         horizontalAlignment: Label.AlignRight
-                    }
-
-                    TextField {
+                    } TextField {
                         text: docEstatusFinal
                         Layout.fillWidth: true
+                        onTextChanged: docEstatusFinal = text
                     }
                 }
             }
@@ -758,7 +810,6 @@ TabView {
             //
             GroupBox {
                 Layout.fillWidth: true
-
                 title: qsTr("Especialidad")
                 Layout.margins: app.spacing
 
@@ -772,20 +823,16 @@ TabView {
                     Label {
                         text: qsTr("Área") + ":"
                         horizontalAlignment: Label.AlignRight
-                    }
-
-                    TextField {
+                    } TextField {
                         text: espArea
                         Layout.fillWidth: true
-                        onTextChanged: espArea = text
+                        onTextChanged: espTitulo = text
                     }
 
                     Label {
                         text: qsTr("Institución") + ":"
                         horizontalAlignment: Label.AlignRight
-                    }
-
-                    TextField {
+                    } TextField {
                         text: espInstitucion
                         Layout.fillWidth: true
                         onTextChanged: espInstitucion = text
@@ -794,9 +841,7 @@ TabView {
                     Label {
                         text: qsTr("País de Egreso") + ":"
                         horizontalAlignment: Label.AlignRight
-                    }
-
-                    TextField {
+                    } TextField {
                         text: espPais
                         Layout.fillWidth: true
                         onTextChanged: espPais = text
@@ -805,9 +850,7 @@ TabView {
                     Label {
                         text: qsTr("Cédula Profesional") + ":"
                         horizontalAlignment: Label.AlignRight
-                    }
-
-                    TextField {
+                    } TextField {
                         text: espCedula
                         Layout.fillWidth: true
                         onTextChanged: espCedula = text
@@ -816,23 +859,19 @@ TabView {
                     Label {
                         text: qsTr("Año de Obtención") + ":"
                         horizontalAlignment: Label.AlignRight
-                    }
-
-                    TextField {
+                    } TextField {
                         text: espAnoObtencion
-                        onTextChanged: espAnoObtencion = text
                         Layout.fillWidth: true
+                        onTextChanged: espAnoObtencion = text
                     }
 
                     Label {
                         text: qsTr("Estatus Final") + ":"
                         horizontalAlignment: Label.AlignRight
-                    }
-
-                    TextField {
+                    } TextField {
                         text: espEstatusFinal
-                        onTextChanged: espEstatusFinal = text
                         Layout.fillWidth: true
+                        onTextChanged: espEstatusFinal = text
                     }
                 }
             }

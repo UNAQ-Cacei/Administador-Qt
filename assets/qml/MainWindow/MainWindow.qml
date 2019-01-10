@@ -23,8 +23,10 @@
 
 import QtQuick 2.0
 import QtQuick.Layouts 1.0
-import QtQuick.Controls 1.0
+import QtQuick.Controls 1.4
 import Qt.labs.settings 1.0
+
+import "../Componentes"
 
 ApplicationWindow {
     id: window
@@ -36,6 +38,11 @@ ApplicationWindow {
     height: 600
     minimumHeight: 520
     minimumWidth: 360
+
+    //
+    // Indice del profesor seleccionado
+    //
+    property int profesorSeleccionado: 0
 
     //
     // Definir titulo de la ventana
@@ -93,6 +100,19 @@ ApplicationWindow {
         onEstadisticasBaseDeDatos: window.estadisticasBaseDeDatos()
         onModificarDatosExistentes: window.modificarDatosExistentes()
         onAbrirBaseDeDatosExistente: window.abrirBaseDeDatosExistente()
+    }
+
+    //
+    // Cargar datos del primer profesor al abrir la Db
+    //
+    Connections {
+        target: CAdministradorDb
+        onBaseDeDatosCambiada: {
+            if (CAdministradorDb.profesores.lenght > 0)
+                profesorSeleccionado = 0
+            else
+                profesorSeleccionado = -1
+        }
     }
 
     //
@@ -228,21 +248,69 @@ ApplicationWindow {
         // Seleccionador de profesores
         //
         TabView {
+            id: tabView
+            visible: enabled
+            enabled: opacity > 0
             Layout.fillWidth: false
             Layout.fillHeight: true
+            Layout.minimumWidth: 296
+            opacity: CAdministradorDb.profesores.length > 0 ? 1 : 0
+            Behavior on opacity { NumberAnimation {} }
 
             Tab {
                 title: qsTr ("Profesores")
 
-                ColumnLayout {
-                    spacing: app.spacing
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
+                ScrollView {
+                    anchors.fill: parent
+                    anchors.topMargin: 2
 
-                    Repeater {
+                    ListView {
+                        clip: true
+                        id: profesores
+                        spacing: app.spacing
                         model: CAdministradorDb.profesores
-                        delegate: Label {
-                            text: data
+                        boundsBehavior: Flickable.StopAtBounds
+                        flickableDirection: Flickable.VerticalFlick
+
+                        Connections {
+                            target: window
+                            onProfesorSeleccionadoChanged: profesores.currentIndex = window.profesorSeleccionado
+                        }
+
+                        onCurrentIndexChanged: {
+                            window.profesorSeleccionado = currentIndex
+                            detallesProf.leerDatos(currentIndex + 1)
+                        }
+
+                        delegate: Rectangle {
+                            width: parent.width
+                            height: 24 + 2 * app.spacing
+                            color: ListView.isCurrentItem ? Qt.rgba(0,0,1,0.4) : "transparent"
+
+                            Behavior on color { ColorAnimation{} }
+
+                            MouseArea {
+                                anchors.fill: parent
+                                onClicked: profesores.currentIndex = index
+                            }
+
+                            RowLayout {
+                                anchors.fill: parent
+                                anchors.margins: app.spacing
+
+                                Image {
+                                    sourceSize: Qt.size(24,24)
+                                    source: "qrc:/iconos/info.svg"
+                                    Layout.alignment: Qt.AlignVCenter
+                                }
+
+                                Label {
+                                    text: modelData
+                                    elide: Text.ElideRight
+                                    Layout.fillWidth: true
+                                    Layout.alignment: Qt.AlignVCenter
+                                }
+                            }
                         }
                     }
                 }
@@ -250,19 +318,128 @@ ApplicationWindow {
         }
 
         //
-        // Tabla seleccionada
+        // Mostrar datos del profesor seleccionado
         //
-        TabView {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
+        ColumnLayout {
+            visible: enabled
+            enabled: opacity > 0
+            spacing: app.spacing
+            Layout.fillWidth: enabled
+            Layout.fillHeight: enabled
+            opacity: CAdministradorDb.profesores.length > 0 ? 1 : 0
 
-            Tab {
-                title: qsTr ("Datos de Tabla")
+            Behavior on opacity { NumberAnimation {} }
 
-                TabView {
-                    anchors.fill: parent
-                    anchors.margins: -1
+            DetallesProfesor {
+                id: detallesProf
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+            }
+
+            RowLayout {
+                spacing: app.spacing
+                Layout.fillWidth: true
+
+                Button {
+                    text: qsTr("Eliminar Profesor")
+                    onClicked: CAdministradorDb.eliminarProfesor(profesorSeleccionado + 1, false, true)
                 }
+
+                Item {
+                    Layout.fillWidth: true
+                }
+
+                Button {
+                    text: qsTr("Cancelar Modificaciones")
+                    onClicked: detallesProf.leerDatos(profesorSeleccionado + 1)
+                }
+
+                Button {
+                    text: qsTr("Guardar Cambios")
+                    onClicked: detallesProf.guardarDatos(profesorSeleccionado + 1)
+                }
+            }
+        }
+
+        //
+        // Registrar nuevo profesor
+        //
+        ColumnLayout {
+            visible: enabled
+            enabled: opacity > 0
+            Layout.fillWidth: enabled
+            Layout.fillHeight: enabled
+            opacity: CAdministradorDb.profesores.length > 0 ? 0 : 1
+            Behavior on opacity { NumberAnimation{} }
+
+            //
+            // Definir espacio entre controles
+            //
+            spacing: app.spacing
+
+            //
+            // Espaciador
+            //
+            Item {
+                Layout.fillHeight: true
+            }
+
+            //
+            // Logo de la UNAQ
+            //
+            Image {
+                source: "qrc:/imagenes/unaq.png"
+                Layout.alignment: Qt.AlignHCenter
+            }
+
+            //
+            // Espaciador
+            //
+            Item {
+                Layout.preferredHeight: app.spacing
+            }
+
+            //
+            // Texto de bienvenida
+            //
+            Text {
+                font.bold: true
+                font.pixelSize: 24
+                Layout.fillWidth: true
+                text: qsTr("No hay profesores registrados")
+                horizontalAlignment: Text.AlignHCenter
+            } Text {
+                opacity: 0.8
+                font.pixelSize: 16
+                Layout.fillWidth: true
+                text: qsTr("Seleccione una de las siguientes opciones") + "..."
+                horizontalAlignment: Text.AlignHCenter
+                wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+            }
+
+            //
+            // Espaciador
+            //
+            Item {
+                Layout.preferredHeight: app.spacing
+            }
+
+            //
+            // Botones
+            //
+            Button {
+                onClicked: nuevoProfesor()
+                Layout.preferredWidth: 260
+                Layout.alignment: Qt.AlignHCenter
+                text: qsTr("Registrar Nuevo Profesor")
+                iconSource: "qrc:/iconos/registrar-profesor.svg"
+            }
+
+            //
+            // Espaciador
+            //
+            Item {
+                Layout.fillHeight: true
             }
         }
     }

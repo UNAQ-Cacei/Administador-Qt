@@ -38,13 +38,14 @@ Item {
     // Ventana principal
     //
     MainWindow {
+        id: mainWindow
         Component.onCompleted: showNormal()
 
         onAcercaDe: acercaDe.show()
         onNuevoProfesor: nuevoProfesor.registrarProfesor()
         onReportarError: {}
-        onGenerarReporteIndividual: buscarProfesor.show()
-        onModificarDatosExistentes: buscarProfesor.show()
+        onGenerarReporteIndividual: bpReporteIndividual.show()
+        onModificarDatosExistentes: bpDatosExistentes.show()
         onGenerarReporteDeArea: generarReporteDeArea.show()
         onGenerarReporteGeneral: generarReporteGeneral.show()
         onNuevaBaseDeDatos: CAdministradorDb.nuevaBaseDeDatos()
@@ -54,12 +55,14 @@ Item {
     }
 
     //
-    // Dialogo de buscar profesor, se usa en varias
-    // partes de la aplicacion
+    // Dialogos de buscar profesor
     //
     BuscarProfesor {
-        id: buscarProfesor
+        id: bpReporteIndividual
         onProfesorSeleccionado: {}
+    } BuscarProfesor {
+        id: bpDatosExistentes
+        onProfesorSeleccionado: mainWindow.profesorSeleccionado = id - 1
     }
 
     //

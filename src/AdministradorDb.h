@@ -45,6 +45,7 @@ signals:
     void baseDeDatosCambiada();
 
 public:
+    AdministradorDb();
     ~AdministradorDb();
 
     bool disponible();
@@ -54,6 +55,9 @@ public:
     static AdministradorDb* instancia();
 
     QStringList profesores();
+
+    Q_INVOKABLE QStringList buscar (const QString& nombre);
+
     Q_INVOKABLE int registrarProfesor();
     Q_INVOKABLE QString leerDato (const int id,
                                   const QString& tabla,
@@ -72,8 +76,10 @@ public slots:
     void abrirBaseDeDatos();
     void cerrarBaseDeDatos();
     void mostrarEstadisticas();
+    void actualizarListaProfes() { emit profesoresCambiados(); }
     void eliminarProfesor (const int id,
-                           const bool silent);
+                           const bool silent,
+                           const bool quitarRegistros = false);
 
     void mostrarInfo (const QString& titulo,
                       const QString& texto);

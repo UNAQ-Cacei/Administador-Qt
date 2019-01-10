@@ -29,9 +29,34 @@
 #include <QApplication>
 
 /**
+ * Definir tablas validas de la base de datos
+ */
+static const QStringList TABLAS = {
+    "Datos Generales",
+    "Datos Personales",
+    "Licenciatura",
+    "Maestria",
+    "Doctorado",
+    "Especialidad",
+    "Cursos",
+    "Certificaciones",
+    "Experiencia Laboral"
+};
+
+
+/**
  * Apuntador a la única instancia de está clase
  */
 static AdministradorDb* INSTANCE = Q_NULLPTR;
+
+/**
+ * @brief AdministradorDb::AdministradorDb
+ */
+AdministradorDb::AdministradorDb() {
+    // Actualizar lista de profesores cuando abrimos/cerramos DB
+    connect (this, &AdministradorDb::baseDeDatosCambiada,
+             this, &AdministradorDb::profesoresCambiados);
+}
 
 /**
  * Cierra la base de datos antes de que la clase
@@ -78,11 +103,11 @@ QStringList AdministradorDb::profesores() {
             // como profesores activos en la institucion)
             for (int i = 0; i < apellidosPaternos.length(); ++i) {
                 // Checar si profesor sigue activo en la institucion
-                if (leerDato (ids.at (i).toInt(), "Datos Generales", "Inactivo") == "true")
-                    continue;
+                bool activo = (leerDato (ids.at (i).toInt(), "Datos Generales", "Activo") == "1");
 
                 // Registrar nombre
-                profesores.append(tr("%1 %2 %3")
+                profesores.append(tr("%1 %2 %3 %4")
+                                  .arg(activo ? "" : tr("[INACTIVO]"))
                                   .arg(apellidosPaternos.at(i).toString())
                                   .arg(apellidosMaternos.at(i).toString())
                                   .arg(nombres.at(i).toString()));
@@ -92,6 +117,70 @@ QStringList AdministradorDb::profesores() {
 
     // Regresar lista de profesores
     return profesores;
+}
+
+/**
+ * Regresa la lista de profesores que contienen el @a nombre definido
+ */
+QStringList AdministradorDb::buscar (const QString& nombre) {
+    // No hay termino de busqueda, regresar lista completa de profesores
+    if (nombre.isEmpty())
+        return profesores();
+
+    // El termino de busqueda consta de espacios, regresar lista completa
+    QString copia = nombre;
+    copia.replace(" ", "");
+    if (copia.isEmpty())
+        return profesores();
+
+    // Buscar termino en lista de profesores
+    return profesores().filter(nombre);
+}
+
+/**
+ * Registra un nuevo profesor en la base de datos y regresa
+ * el objeto que permite modificar/leer los datos del nuevo
+ * profesor.
+ */
+int AdministradorDb::registrarProfesor() {
+    // Solo intentar registrar el profesor si estamos conectados
+    // a la base de datos
+    if (disponible()) {
+        // Calcular ID
+        int id = profesores().count() + 1;
+
+        // Guardar estatus de cada query
+        bool ok = true;
+
+        // Agregar nuevo renglon con ID establecido
+        foreach (QString tabla, TABLAS) {
+            // Generar comando SQL
+            QString cmd = tr("INSERT INTO [%1] (ID) VALUES (%2);")
+                    .arg(tabla)
+                    .arg(id);
+
+            // Ejecutar query
+            QSqlQuery query;
+            ok &= query.exec(cmd);
+
+            // Terminar query o reportar error
+            if (ok)
+                query.finish();
+            else
+                qDebug() << "Error al registrar profesor en tabla" << tabla;
+        }
+
+        // Regresar ID de profesor si todo estuvo bien
+        if (ok)
+            return id;
+
+        // Eliminar profesor si algo no funciono
+        else
+            eliminarProfesor(id, true, true);
+    }
+
+    // Hubo un error al intentar registrar el nuevo profesor
+    return -1;
 }
 
 /**
@@ -127,7 +216,6 @@ QString AdministradorDb::leerDato (const int id,
     return "";
 }
 
-
 bool AdministradorDb::escribirDato (const int id,
                                     const QString &tabla,
                                     const QString &identificador,
@@ -140,8 +228,14 @@ bool AdministradorDb::escribirDato (const int id,
         return false;
     }
 
-    // Verificar argumentos
-    if (tabla.isEmpty() || identificador.isEmpty()) {
+    // Verificar que la tabla existe
+    if (!TABLAS.contains(tabla)) {
+        qDebug() << Q_FUNC_INFO << "tabla invalida";
+        return false;
+    }
+
+    // Verificar acampo
+    if (identificador.isEmpty()) {
         qDebug() << Q_FUNC_INFO << "datos de identificacion invalidos";
         return false;
     }
@@ -153,16 +247,16 @@ bool AdministradorDb::escribirDato (const int id,
     }
 
     // Generar commando
-    QString cmdSql = tr("INSERT INTO [%1] ([%2]) VALUES ('%3');")
+    QString cmdSql = tr("UPDATE [%1] SET [%2] = '%3' WHERE ID = %4;")
             .arg(tabla)
             .arg(identificador)
-            .arg(valor);
+            .arg(valor)
+            .arg(id);
 
     // Ejecutar commando
     QSqlQuery query;
     if (query.exec(cmdSql)) {
         query.finish();
-        emit profesoresCambiados();
         return true;
     }
 
@@ -180,22 +274,6 @@ bool AdministradorDb::escribirDato (const int id,
  */
 bool AdministradorDb::checarExistenciaProfesor(const int id) {
     return disponible() && id >= 0;
-}
-
-/**
- * Registra un nuevo profesor en la base de datos y regresa
- * el objeto que permite modificar/leer los datos del nuevo
- * profesor.
- */
-int AdministradorDb::registrarProfesor() {
-    // Solo intentar registrar el profesor si estamos conectados
-    // a la base de datos
-    if (disponible()) {
-        return 0;
-    }
-
-    // Hubo un error al intentar registrar el nuevo profesor
-    return -1;
 }
 
 /**
@@ -317,13 +395,59 @@ void AdministradorDb::mostrarEstadisticas() {
  * Si @a silent es @c true, no se va a mostrar un mensaje de retroalimentacion
  * al usuario.
  */
-void AdministradorDb::eliminarProfesor (const int id, const bool silent) {
-    if (!disponible())
+void AdministradorDb::eliminarProfesor (const int id,
+                                        const bool silent,
+                                        const bool quitarRegistros) {
+    // Registrar estatus de operacion
+    bool eliminado = false;
+
+    // La base de datos no esta disponible
+    if (!disponible()) {
         mostrarError(tr("Error"),
                      tr("No hay ninguna base de datos cargada por la aplicación!"));
-
-    else {
+        return;
     }
+
+    // Eliminar profesor completamente
+    if (quitarRegistros) {
+        // Preguntar antes de eliminar
+        if (!silent) {
+            QMessageBox box;
+            box.setIcon(QMessageBox::Question);
+            box.setWindowTitle(tr("Eliminar profesor"));
+            box.setText(tr("Esta seguro/a que quiere eliminar este profesor?"));
+            box.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+            if (box.exec() != QMessageBox::Yes)
+                return;
+        }
+
+        // Eliminar profesor de la base de datos
+        bool ok = true;
+        foreach (QString tabla, TABLAS) {
+            QString cmd = tr("DELETE FROM [%1] WHERE ID=%2").arg(tabla).arg(id);
+            QSqlQuery query;
+            ok &= query.exec(cmd);
+
+            if (ok)
+                query.finish();
+        }
+
+        // Actualizar lista de profesores
+        emit profesoresCambiados();
+    }
+
+    // Cambiar estado de profesor de activo a inactivo
+    else
+        eliminado = escribirDato(id, "Datos Generales", "Activo", "0");
+
+    // Mostrar mensaje de exito
+    if (!silent && eliminado) {
+        mostrarInfo(tr("Profesor eliminado"),
+                    tr("El profesor fue eliminado de la base de datos exitosamente"));
+    }
+
+    // Actualizar lista de profesores
+    emit profesoresCambiados();
 }
 
 /**
@@ -421,6 +545,10 @@ QList<QList<QVariant>> AdministradorDb::ejecutarConsulta(const QStringList campo
 
     // Terminar funcion si la base de datos no esta conectado
     if (!disponible())
+        return resultados;
+
+    // Verificar que la tabla existe
+    if (!TABLAS.contains(tabla))
         return resultados;
 
     // Hacer un query individual para cada campo y registrar los resultados

@@ -42,7 +42,7 @@ Window {
     //
     function cancelar() {
         if (idNuevoProfesor > idInvalido)
-            CAdministradorDb.eliminarProfesor(idNuevoProfesor, true)
+            CAdministradorDb.eliminarProfesor(idNuevoProfesor, true, true)
 
         hide()
     }
@@ -80,8 +80,12 @@ Window {
     // Preparar datos para nuevo profesor al mostrar ventana
     //
     onVisibleChanged: {
-       if (!visible)
-           idNuevoProfesor = idInvalido
+        detallesProf.resetVariables()
+
+        if (!visible)
+            idNuevoProfesor = idInvalido
+        else
+            detallesProf.activo = true
     }
 
     //
@@ -126,15 +130,21 @@ Window {
 
             Button {
                 text: qsTr("Registrar")
+                enabled: detallesProf.datosMinimos()
                 onClicked: {
+                    // Deshabilitar boton mientras escribimos
+                    enabled = false
+
+                    // Actualizar datos
                     if (idNuevoProfesor > idInvalido) {
-                        if (detallesProf.guardarDatos(idNuevoProfesor)) {
+                        if (detallesProf.guardarDatos(idNuevoProfesor))
                             hide()
-                            return
-                        }
+                        else
+                            CAdministradorDb.eliminarProfesor(idNuevoProfesor, true, true)
                     }
 
-                    cancelar()
+                    // Habilitar boton de nuevo
+                    enabled = true
                 }
             }
         }
